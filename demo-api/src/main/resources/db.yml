@@ -8,7 +8,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update # update, create
     properties:
       hibernate:
         format_sql: true   # ✅ 이렇게!

@@ -1,6 +1,28 @@
+pluginManagement {
+    def springBootVersion = "3.5.3"
+    def springDependencyManagementVersion = "1.1.7"
+    def asciidoctorConvertVersion = "3.3.2"
+
+    plugins {
+        id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            switch (requested.id.id) {
+                case "org.springframework.boot":
+                    useVersion(springBootVersion)
+                    break
+                case "io.spring.dependency-management":
+                    useVersion(springDependencyManagementVersion)
+                    break
+                case "org.asciidoctor.jvm.convert":
+                    useVersion(asciidoctorConvertVersion)
+                    break
+            }
+        }
+    }
+}
+
 rootProject.name = 'demo'
-include 'demo-api'
-include 'demo-storage'
-include 'demo-domain'
-include 'demo-common'
-include 'demo-external'
+include 'demo-api', 'demo-storage', 'demo-domain', 'demo-common', 'demo-external', ':api-docs'
