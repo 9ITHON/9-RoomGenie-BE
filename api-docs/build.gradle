@@ -1,0 +1,10 @@
+dependencies {
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+    compileOnly 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    implementation 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    implementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    implementation project(':demo-common')
+}
