@@ -26,13 +26,28 @@ test {
 }
 
 asciidoctor {
-	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
+	// sourceDir, outputDir 등 기존 설정 유지
+	sourceDir = file('src/docs/asciidoc')
 	outputDir = file("$buildDir/docs/asciidoc")
-	inputs.dir snippetsDir
-	dependsOn test
 
-	attributes 'snippets': snippetsDir.absolutePath
+	// snippetsDir가 있을 때만 inputs.dir 등록
+	if (snippetsDir.exists()) {
+		inputs.dir snippetsDir
+		attributes 'snippets': snippetsDir.absolutePath
+	} else {
+		// 디렉터리가 없으면 attributes 설정 제거 또는 기본값 사용 가능
+		attributes 'snippets': ''
+	}
+
+	dependsOn test
 	baseDirFollowsSourceDir()
+//	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
+//	outputDir = file("$buildDir/docs/asciidoc")
+//	inputs.dir snippetsDir
+//	dependsOn test
+//
+//	attributes 'snippets': snippetsDir.absolutePath
+//	baseDirFollowsSourceDir()
 }
 
 
@@ -49,7 +64,7 @@ build {
 
 bootJar {
 	enabled = true
-	dependsOn asciidoctor
+	dependsOn asciidoctora
 	from('build/docs/asciidoc') {
 		into 'static/docs'
 	}
