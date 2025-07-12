@@ -19,7 +19,7 @@ dependencies{
 	testImplementation("io.rest-assured:rest-assured") // (optional if using RestAssuredMockMvc)
 	testImplementation("io.rest-assured:spring-mock-mvc") // (optional)
 }
-
+// 스니펫으로 의존성 꼬임
 test {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
