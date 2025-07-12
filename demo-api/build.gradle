@@ -41,6 +41,9 @@ asciidoctor {
 
 	dependsOn test
 	baseDirFollowsSourceDir()
+	// 빌드 문제 해결
+	attributes 'safe': 'unsafe'
+
 //	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
 //	outputDir = file("$buildDir/docs/asciidoc")
 //	inputs.dir snippetsDir
