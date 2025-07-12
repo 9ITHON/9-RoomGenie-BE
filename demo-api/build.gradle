@@ -52,7 +52,7 @@ asciidoctor {
 //	attributes 'snippets': snippetsDir.absolutePath
 //	baseDirFollowsSourceDir()
 }
-
+gradle.startParameter.warningMode = WarningMode.None
 
 
 tasks.register('copyAsciidoctor', Copy) {
