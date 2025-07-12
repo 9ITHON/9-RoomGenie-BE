@@ -64,7 +64,7 @@ build {
 
 bootJar {
 	enabled = true
-	dependsOn asciidoctora
+	dependsOn asciidoctor
 	from('build/docs/asciidoc') {
 		into 'static/docs'
 	}
