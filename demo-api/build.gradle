@@ -55,15 +55,15 @@ asciidoctor {
 gradle.startParameter.warningMode = WarningMode.None
 
 
-tasks.register('copyAsciidoctor', Copy) {
-	dependsOn asciidoctor
-	from layout.buildDirectory.dir('docs/asciidoc')
-	into layout.projectDirectory.dir('src/main/resources/static/docs')
-}
+//tasks.register('copyAsciidoctor', Copy) {
+//	dependsOn asciidoctor
+//	from layout.buildDirectory.dir('docs/asciidoc')
+//	into layout.projectDirectory.dir('src/main/resources/static/docs')
+//}
 
-build {
-	dependsOn 'copyAsciidoctor'
-}
+//build {
+//	dependsOn 'copyAsciidoctor'
+//}
 
 bootJar {
 	enabled = true
