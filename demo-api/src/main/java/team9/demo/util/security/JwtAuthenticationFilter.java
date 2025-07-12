@@ -64,7 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/api/auth/login") ||
                 path.startsWith("/api/auth/logout") ||
                 path.startsWith("/ws-stomp") ||
-                path.startsWith("/docs");
+                path.startsWith("/docs") ||
+                path.startsWith("/health");
     }
 
     private String resolveToken(HttpServletRequest request) {
