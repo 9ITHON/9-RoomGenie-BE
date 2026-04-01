@@ -347,8 +347,8 @@ public class AuthControllerTest extends RestDocsTest {
         UserId userId = TestDataFactory.createUserId();
 
         LoginRequest requestBody = new LoginRequest(
+                "test@naver.com",
                 "testPassword",
-                "01012345678",
                 "testDeviceId",
                 "ios",
                 "testToken"

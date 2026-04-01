@@ -253,8 +253,6 @@ public class MissionControllerTest extends RestDocsTest {
         verify(missionService, times(1))
                 .makeCustomTodayMission(any(UserId.class), eq("청소기 돌리기"));
     }
-    //뻥 뻥 터짐
-
     @Test
     @DisplayName("추천 미션 수락 - 성공")
     void acceptRecommendedTodayMission() throws Exception {
