@@ -3,7 +3,6 @@ plugins {
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.jetbrains.kotlin.jvm' version '1.9.23'
-	id 'application' // ✅ 이 라인을 추가하세요
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
@@ -62,11 +61,6 @@ subprojects{
 	jar {
 		enabled = true
 	}
-	application {
-		mainClass = 'team9.demo.RoomGenieApplication'  // ✅ Spring Boot 3.x 방식
-	}
-
-
 	tasks.named('test') {
 		useJUnitPlatform()
 	}
