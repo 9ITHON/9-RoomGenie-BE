@@ -2,9 +2,9 @@ package team9.demo.implementation.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import team9.demo.model.media.Media;
+import team9.demo.model.post.PostDetail;
 import team9.demo.model.post.PostId;
+import team9.demo.model.post.PostInfo;
 import team9.demo.model.user.UserId;
 import team9.demo.repository.post.PostDetailRepository;
 import team9.demo.repository.post.PostRepository;
@@ -14,24 +14,23 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class PostAppender {
+public class PostReader {
 
     private final PostRepository postRepository;
     private final PostVisibilityRepository postVisibilityRepository;
     private final PostDetailRepository postDetailRepository;
 
-    @Transactional
-    public PostId append(List<Media> medias, UserId userId, String title, String content) {
-        // Post 엔티티 저장 시 URL 필드 포함
-        PostId postId = postRepository.append(userId, title, content);
-        postDetailRepository.append(medias, postId);
-
-        return postId;
+    public List<PostInfo> readInfos (List<UserId> targetUserIds){
+        return postRepository.readInfos(targetUserIds);
     }
 
-    @Transactional
-    public void appendVisibility(PostId postId, List<UserId> targetUserIds) {
-        postVisibilityRepository.append(postId, targetUserIds);
+    public List<PostId> readVisiblePostIds(UserId userId, List<PostId> postIds){
+        return postVisibilityRepository.readVisiblePostIds(userId, postIds);
     }
+
+    public List<PostDetail> readsDetails(List<PostId> postIds){
+        return postDetailRepository.readsDetails(postIds);
+    }
+
 
 }
