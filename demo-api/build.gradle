@@ -28,20 +28,14 @@ test {
 }
 
 asciidoctor {
-	// 소스 / 출력 경로
 	sourceDir = file('src/docs/asciidoc')
 	outputDir = file("$buildDir/docs/asciidoc")
 
-	// ★ 무조건 inputs로 선언 (조건문 금지)
 	inputs.dir snippetsDir
 	inputs.dir sourceDir
 
-	// ★ 무조건 snippets 속성 지정 (조건문 금지)
 	attributes(
 			'snippets': snippetsDir.absolutePath,
-			// 원하면 최신 빌드시각 표시 강제
-			// 'revdate': new Date().format('yyyy-MM-dd'),
-			// 'docdatetime': new Date().format('yyyy-MM-dd HH:mm:ss')
 			'safe': 'unsafe'
 	)
 
@@ -50,17 +44,6 @@ asciidoctor {
 }
 
 gradle.startParameter.warningMode = WarningMode.None
-
-
-//tasks.register('copyAsciidoctor', Copy) {
-//	dependsOn asciidoctor
-//	from layout.buildDirectory.dir('docs/asciidoc')
-//	into layout.projectDirectory.dir('src/main/resources/static/docs')
-//}
-
-//build {
-//	dependsOn 'copyAsciidoctor'
-//}
 
 bootJar {
 	enabled = true
