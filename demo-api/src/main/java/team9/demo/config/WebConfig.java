@@ -1,5 +1,6 @@
 package team9.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -15,6 +16,9 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final UserArgumentResolver userArgumentResolver;
+
+    @Value("${cors.allowed-origins:http://localhost:5173}")
+    private String allowedOrigins;
 
     public WebConfig(UserArgumentResolver userArgumentResolver) {
         this.userArgumentResolver = userArgumentResolver;
@@ -33,15 +37,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(userArgumentResolver); // ✅ 반드시 빈으로 주입된 resolver 사용
+        resolvers.add(userArgumentResolver);
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")  // API 경로를 대상으로
-                .allowedOrigins("http://localhost:5173")  // 허용할 출처 (프론트엔드 주소)
+        registry.addMapping("/api/**")
+                .allowedOrigins(allowedOrigins.split(","))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowCredentials(true);  // 쿠키, 인증 헤더 허용 시 필요
+                .allowCredentials(true);
     }
 
 }

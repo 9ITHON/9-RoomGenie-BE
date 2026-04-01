@@ -18,24 +18,17 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/ai")
 @RequiredArgsConstructor
-public class Aicontroller {
+public class AiController {
 
     private final AiService aiService;
     private final AiFacade aiFacade;
 
     @PostMapping("/image/analysis")
-    public ChatGPTResponse imageAnalysis(@RequestParam MultipartFile image, @RequestParam String requestText, @CurrentUser UserId userId) throws IOException {// 수동 변환
+    public ChatGPTResponse imageAnalysis(@RequestParam MultipartFile image, @RequestParam String requestText, @CurrentUser UserId userId) throws IOException {
         FileData converted = FileHelper.convertMultipartFileToFileData(image);
         ChatResponse result = aiFacade.requestImageAnalysis(converted, requestText, userId);
         return ChatGPTResponse.of(result.getResultMessage());
     }
-//    // request부분 DB에서 랜덤추출
-//    @PostMapping("/image/generate")
-//    public ChatGPTResponse generateCleanedRoomImage(@RequestParam MultipartFile image, @RequestParam String requestText, @RequestParam(name = "userId") UserId userId) throws IOException {
-//        FileData fileData = FileHelper.convertMultipartFileToFileData(image);
-//        String resultUrl = aiService.generateCleanedRoomImage(fileData, requestText, userId);
-//        return ChatGPTResponse.of(resultUrl); // resultUrl을 사용자에게 반환
-//    }// 나중에 로직바꾸기
 
     @PostMapping("/image/mission-verify/{todayMissionId}")
     public ResponseEntity<String> verifyMissionByImage(
@@ -62,7 +55,6 @@ public class Aicontroller {
         FileData fileData = FileHelper.convertMultipartFileToFileData(image);
         String cleanedImageUrl = aiFacade.generateCleanedRoomImageWithLama(fileData, userId);
 
-        // GPT 분석 텍스트 생성 예시 (직접 호출하거나 미리 준비)
         String gptAnalysis = aiFacade.requestImageAnalysisText(cleanedImageUrl, userId);
 
         return ChatGPTResponse.of(cleanedImageUrl, gptAnalysis);

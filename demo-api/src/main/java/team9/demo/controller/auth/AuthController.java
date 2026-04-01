@@ -73,15 +73,4 @@ public class AuthController {
         authService.createLoginInfo(userId, jwtToken.getRefreshToken());
         return ResponseHelper.success(TokenResponse.of(jwtToken));
     }
-
-//    @GetMapping("/refresh")
-//    public ResponseEntity<HttpResponse<TokenResponse>> refreshJwtToken(@RequestHeader("Authorization") String refreshToken) {
-//        Pair<JwtToken, UserId> pair = jwtTokenUtil.refresh(refreshToken);
-//        JwtToken newToken = pair.getFirst();
-//        UserId userId = pair.getSecond();
-//
-//        String oldToken = jwtTokenUtil.cleanedToken(refreshToken);
-//        authService.updateLoginInfo(oldToken, newToken.getRefreshToken(), userId);
-//        return ResponseHelper.success(TokenResponse.of(newToken));
-//    }
 }

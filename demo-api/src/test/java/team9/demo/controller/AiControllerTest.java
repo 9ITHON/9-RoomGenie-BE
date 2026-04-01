@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import team9.demo.RestDocsTest;
 import team9.demo.TestDataFactory;
-import team9.demo.controller.ai.Aicontroller;
+import team9.demo.controller.ai.AiController;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
 import team9.demo.facade.ai.AiFacade;
@@ -53,7 +53,7 @@ public class AiControllerTest extends RestDocsTest {
     void setUpController(RestDocumentationContextProvider restDocumentation) {
         aiService = mock(AiService.class);
         aiFacade = mock(AiFacade.class);
-        Aicontroller controller = new Aicontroller(aiService, aiFacade);
+        AiController controller = new AiController(aiService, aiFacade);
 
         UserId userId = UserId.of("testUserId");
         SecurityContextHolder.getContext().setAuthentication(

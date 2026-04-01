@@ -12,30 +12,25 @@ public class ResponseHelper {
     public static <T> ResponseEntity<HttpResponse<T>> success(T data) {
         HttpResponse<T> response = new HttpResponse<>(HttpStatus.OK.value(), data);
         return new ResponseEntity<>(response, HttpStatus.OK);
-        // return ResponseEntity.ok(response);
     }
 
     public static ResponseEntity<HttpResponse<SuccessOnlyResponse>> successOnly() {
         HttpResponse<SuccessOnlyResponse> response = new HttpResponse<>(HttpStatus.OK.value(), new SuccessOnlyResponse());
         return new ResponseEntity<>(response, HttpStatus.OK);
-        // return ResponseEntity.ok(response);
     }
 
     public static ResponseEntity<HttpResponse<SuccessCreateResponse>> successCreateOnly() {
         HttpResponse<SuccessCreateResponse> response = new HttpResponse<>(HttpStatus.CREATED.value(), new SuccessCreateResponse());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-        // return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     public static <T> ResponseEntity<HttpResponse<T>> successCreate(T data) {
         HttpResponse<T> response = new HttpResponse<>(HttpStatus.CREATED.value(), data);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-        // return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     public static <T> ResponseEntity<HttpResponse<T>> error(HttpStatus status, T data) {
         HttpResponse<T> response = new HttpResponse<>(status.value(), data);
         return new ResponseEntity<>(response, status);
-        // return ResponseEntity.status(status).body(response);
     }
 }
