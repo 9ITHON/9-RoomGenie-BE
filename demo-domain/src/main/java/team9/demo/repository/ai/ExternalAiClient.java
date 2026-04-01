@@ -10,7 +10,6 @@ import java.util.List;
 public interface ExternalAiClient {
     ChatResponse requestImageAnalysis(String imageUrl, String requestText);
     ChatResponse requestCompareAnalysis(String beforeUrl, String afterUrl, String requestText);
-    // GPT Vision을 통한 어질러진 영역 분석
     List<Box> detectClutterBoxes(byte[] imageBytes);
-    String editImageWithLama(byte[] imageBytes, byte[] maskBytes, UserId userId);
+    String editImageWithLama(byte[] imageBytes, byte[] maskBytes, String prompt, UserId userId);
 }

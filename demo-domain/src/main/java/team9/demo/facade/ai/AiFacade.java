@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
 import team9.demo.implementation.ai.AiProcessor;
+import team9.demo.implementation.ai.AiPromptGenerator;
 import team9.demo.model.ai.analysis.ChatResponse;
 import team9.demo.model.media.FileCategory;
 import team9.demo.model.media.FileData;
@@ -23,6 +24,7 @@ public class AiFacade {
 
     private final UserService userService;
     private final AiProcessor aiProcessor;
+    private final AiPromptGenerator aiPromptGenerator;
 
     public ChatResponse requestImageAnalysis(FileData file, String requestText, UserId userId) {
         Media media = userService.uploadFile(file, userId, FileCategory.USER);
@@ -30,7 +32,7 @@ public class AiFacade {
     }
 
     public String requestImageAnalysisText(String imageUrl, UserId userId) {
-        String prompt = "해당 이미지를 보고 분석 후 어지럽혀진 방을 깔끔하게 정리할 수 있도록 가이드를 작성해 주세요.";
+        String prompt = aiPromptGenerator.roomCleaningGuide();
         ChatResponse response = aiProcessor.requestImageAnalysis(imageUrl, prompt, userId);
         return response.getResultMessage();
     }

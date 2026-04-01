@@ -22,6 +22,7 @@ public class AiProcessor {
 
     private final ExternalAiClient externalAiClient;
     private final AiAnalysisGenerator aiAnalysisGenerator;
+    private final AiPromptGenerator aiPromptGenerator;
 
     public ChatResponse requestImageAnalysis(String imageUrl, String requestText, UserId userId) {
         ChatResponse response = externalAiClient.requestImageAnalysis(imageUrl, requestText);
@@ -42,7 +43,8 @@ public class AiProcessor {
             }
 
             byte[] maskImage = MaskGenerator.createMask(clutterBoxes, width, height);
-            return externalAiClient.editImageWithLama(originalImage.getContent(), maskImage, userId);
+            String prompt = aiPromptGenerator.lamaInpainting();
+            return externalAiClient.editImageWithLama(originalImage.getContent(), maskImage, prompt, userId);
         } catch (AiException e) {
             throw e;
         } catch (Exception e) {

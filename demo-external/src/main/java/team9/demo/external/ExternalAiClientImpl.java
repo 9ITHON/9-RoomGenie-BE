@@ -144,8 +144,8 @@ public class ExternalAiClientImpl implements ExternalAiClient {
 
     // [4] LAMA Inpainting - 이미지 정리
     @Override
-    public String editImageWithLama(byte[] imageBytes, byte[] maskBytes, UserId userId) {
-        MultiValueMap<String, Object> body = buildLamaRequestBody(imageBytes, maskBytes);
+    public String editImageWithLama(byte[] imageBytes, byte[] maskBytes, String prompt, UserId userId) {
+        MultiValueMap<String, Object> body = buildLamaRequestBody(imageBytes, maskBytes, prompt);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -228,7 +228,7 @@ public class ExternalAiClientImpl implements ExternalAiClient {
         return new ChatResponse(List.of(new Choice(0, new TextMessage("assistant", content))));
     }
 
-    private MultiValueMap<String, Object> buildLamaRequestBody(byte[] imageBytes, byte[] maskBytes) {
+    private MultiValueMap<String, Object> buildLamaRequestBody(byte[] imageBytes, byte[] maskBytes, String prompt) {
         ByteArrayResource imageResource = new ByteArrayResource(imageBytes) {
             @Override public String getFilename() { return "image.png"; }
         };
@@ -239,7 +239,7 @@ public class ExternalAiClientImpl implements ExternalAiClient {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("image", imageResource);
         body.add("mask", maskResource);
-        body.add("prompt", wrap("Remove all clutter from the surface. Keep walls and furniture unchanged."));
+        body.add("prompt", wrap(prompt));
         body.add("ldmSteps", wrap("20"));
         body.add("ldmSampler", wrap("plms"));
         body.add("hdStrategy", wrap("Original"));
