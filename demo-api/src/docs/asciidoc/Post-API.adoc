@@ -1,0 +1,34 @@
+[[Post-API]]
+= Post API
+
+== 1. 게시글 생성
+
+=== 요청(Request)
+include::{snippets}/post-controller-test/create-post/http-request.adoc[]
+
+=== 요청 파트(Request Parts)
+include::{snippets}/post-controller-test/create-post/request-parts.adoc[]
+
+=== 요청 파라미터(Query Parameters)
+include::{snippets}/post-controller-test/create-post/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/post-controller-test/create-post/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/post-controller-test/create-post/response-fields.adoc[]
+
+
+== 2. 게시글 목록 조회
+
+=== 요청(Request)
+include::{snippets}/post-controller-test/get-posts/http-request.adoc[]
+
+=== 요청 파라미터(Query Parameters)
+include::{snippets}/post-controller-test/get-posts/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/post-controller-test/get-posts/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/post-controller-test/get-posts/response-fields.adoc[]

@@ -1,0 +1,28 @@
+[[User-API]]
+= User API
+
+== 1. 사용자 검색
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/search-user/http-request.adoc[]
+
+=== 요청 파라미터(Query Parameters)
+include::{snippets}/user-controller-test/search-user/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/search-user/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/search-user/response-fields.adoc[]
+
+
+== 1-1. 사용자 검색 - 실패 (존재하지 않는 사용자)
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/search-user-not-found/http-request.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/search-user-not-found/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/search-user-not-found/response-fields.adoc[]

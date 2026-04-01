@@ -65,3 +65,11 @@ API 문서에서 공통으로 사용되는 내용을 정의합니다.
 include::Auth-API.adoc[]
 
 include::Mission-API.adoc[]
+
+include::Friend-API.adoc[]
+
+include::Post-API.adoc[]
+
+include::User-API.adoc[]
+
+include::AI-API.adoc[]

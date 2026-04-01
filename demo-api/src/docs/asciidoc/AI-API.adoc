@@ -1,0 +1,49 @@
+[[AI-API]]
+= AI API
+
+== 1. 이미지 분석
+
+=== 요청(Request)
+include::{snippets}/ai-controller-test/image-analysis/http-request.adoc[]
+
+=== 요청 파트(Request Parts)
+include::{snippets}/ai-controller-test/image-analysis/request-parts.adoc[]
+
+=== 요청 파라미터(Query Parameters)
+include::{snippets}/ai-controller-test/image-analysis/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/ai-controller-test/image-analysis/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/ai-controller-test/image-analysis/response-fields.adoc[]
+
+
+== 2. 미션 이미지 비교 검증
+
+=== 요청(Request)
+include::{snippets}/ai-controller-test/verify-mission-by-image/http-request.adoc[]
+
+=== 요청 파트(Request Parts)
+include::{snippets}/ai-controller-test/verify-mission-by-image/request-parts.adoc[]
+
+=== 경로 변수(Path Parameters)
+include::{snippets}/ai-controller-test/verify-mission-by-image/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/ai-controller-test/verify-mission-by-image/http-response.adoc[]
+
+
+== 3. 방 이미지 정리 생성
+
+=== 요청(Request)
+include::{snippets}/ai-controller-test/generate-cleaned-room-image/http-request.adoc[]
+
+=== 요청 파트(Request Parts)
+include::{snippets}/ai-controller-test/generate-cleaned-room-image/request-parts.adoc[]
+
+=== 응답(Response)
+include::{snippets}/ai-controller-test/generate-cleaned-room-image/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/ai-controller-test/generate-cleaned-room-image/response-fields.adoc[]
