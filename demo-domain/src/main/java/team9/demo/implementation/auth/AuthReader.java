@@ -3,6 +3,7 @@ package team9.demo.implementation.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import team9.demo.error.AuthorizationException;
+import team9.demo.error.ConflictException;
 import team9.demo.error.ErrorCode;
 import team9.demo.external.ExternalAuthClient;
 import team9.demo.implementation.contact.Contact;
@@ -26,7 +27,7 @@ public class AuthReader {
             }
             return code;
         }
-        throw new IllegalArgumentException("지원되지 않는 Contact 타입입니다.");
+        throw new ConflictException(ErrorCode.NOT_SUPPORT_CONTACT_TYPE);
     }
 
     public RefreshToken readLoginInfo(String refreshToken, UserId userId) {

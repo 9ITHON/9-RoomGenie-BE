@@ -2,6 +2,8 @@ package team9.demo.implementation.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import team9.demo.error.ConflictException;
+import team9.demo.error.ErrorCode;
 import team9.demo.external.ExternalAuthClient;
 import team9.demo.implementation.contact.Contact;
 import team9.demo.implementation.contact.PhoneNumber;
@@ -24,7 +26,7 @@ public class AuthAppender {
         if (contact instanceof PhoneNumber phoneNumber) {
             externalAuthClient.cacheVerificationCode(phoneNumber, verificationCode);
         } else {
-            throw new IllegalArgumentException("지원되지 않는 Contact 타입입니다: " + contact.getClass().getSimpleName());
+            throw new ConflictException(ErrorCode.NOT_SUPPORT_CONTACT_TYPE);
         }
     }
 }

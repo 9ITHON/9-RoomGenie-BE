@@ -50,11 +50,11 @@ public class AiFacade {
         try (var is = new ByteArrayInputStream(file.getContent())) {
             BufferedImage bufferedImage = ImageIO.read(is);
             if (bufferedImage == null) {
-                throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
+                throw new AiException(ErrorCode.AI_IMAGE_READ_FAILED);
             }
             return aiProcessor.cleanImageWithLama(file, bufferedImage.getWidth(), bufferedImage.getHeight(), userId);
         } catch (IOException e) {
-            throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
+            throw new AiException(ErrorCode.AI_IMAGE_READ_FAILED);
         }
     }
 

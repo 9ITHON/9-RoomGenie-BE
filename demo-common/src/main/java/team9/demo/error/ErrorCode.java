@@ -1,7 +1,5 @@
 package team9.demo.error;
 
-
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +12,7 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    // Auth errors
+    // Auth
     WRONG_VERIFICATION_CODE("AUTH_1", "인증 번호가 틀렸습니다."),
     EXPIRED_VERIFICATION_CODE("AUTH_2", "인증 번호가 만료되었습니다."),
     TOKEN_EXPIRED("AUTH_3", "토큰이 만료되었습니다."),
@@ -33,7 +31,9 @@ public enum ErrorCode {
     VARIABLE_WRONG("COMMON_2", "요청 변수가 잘못되었습니다."),
     WRONG_ACCESS("COMMON_3", "잘못된 접근입니다."),
     INTERNAL_SERVER_ERROR("COMMON_4", "Internal Server Error"),
-    //파일 관련
+    NOT_SUPPORT_CONTACT_TYPE("COMMON_5", "지원되지 않는 연락처 타입입니다."),
+
+    // File
     FILE_UPLOAD_FAILED("FILE_1", "파일 업로드를 실패하였습니다."),
     FILE_DELETE_FAILED("FILE_2", "파일 삭제를 실패하였습니다."),
     FILE_CONVERT_FAILED("FILE_3", "파일 변환에 실패하였습니다."),
@@ -41,8 +41,7 @@ public enum ErrorCode {
     NOT_SUPPORT_FILE_TYPE("FILE_5", "지원하지 않는 형식의 파일입니다."),
     FILE_NAME_INCORRECT("FILE_6", "파일 이름이 잘못되었습니다."),
 
-
-
+    // User
     USER_NOT_FOUND("USER_1", "회원을 찾을 수 없음."),
     USER_NOT_ACCESS("USER_2", "사용자가 활성화되지 않았습니다."),
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
@@ -50,6 +49,7 @@ public enum ErrorCode {
     USER_PUSH_TOKEN_NOT_FOUND("USER_5", "푸시 토큰을 찾을 수 없음."),
     USER_NAME_OVERLAP("USER_6", "유저 이름이 중복됨"),
 
+    // Friend
     FRIEND_NOT_FOUND("FRIEND_1", "친구를 찾을 수 없음."),
     FRIEND_ALREADY_CREATED("FRIEND_2", "이미 추가된 친구입니다."),
     FRIEND_MYSELF("FRIEND_3", "자기 자신을 친구로 추가할 수 없습니다."),
@@ -58,61 +58,34 @@ public enum ErrorCode {
     FRIEND_DELETED("FRIEND_6", "삭제된 친구입니다."),
     FRIEND_NORMAL("FRIEND_7", "일반 사용자입니다."),
 
+    // Feed
     FEED_NOT_FOUND("FEED_1", "피드를 찾을 수 없음."),
     FEED_IS_NOT_OWNED("FEED_4", "피드 작성자가 아닙니다."),
     FEED_IS_OWNED("FEED_5", "피드 작성자입니다."),
     FEED_IS_NOT_VISIBLE("FEED_6", "피드를 볼 수 없습니다."),
 
-
-
-
     INVALID_TYPE("INVALID_1", "잘못된 타입입니다."),
 
-
-    // 미션 관련
+    // Mission
     MISSION_NOT_FOUND("MISSION_1", "미션이 존재하지 않습니다."),
     TODAY_MISSION_LIMIT_EXCEEDED("MISSION_2", "오늘의 미션은 최대 3개까지 등록할 수 있습니다."),
 
-    //AI 관련
-    AI_PROMPT_FAILED("AI_1", "AI 프롬프트를 실패하였습니다. 응답이 완전하지 않습니다."),
-    AI_NOTIFICATION_NOT_SUPPORTED("AI_2", "AI 알림을 지원하지 않습니다."),
-    AI_NOT_SUPPORTED("AI_4", "AI를 지원하지 않습니다."),
-    REST_CLIENT_EXCEPTION("AI_5", "OpenAI 호출 중 RestClientException 발생"),
-    AI_QUOTA_EXCEEDED("AI_6", "OpenAI 호출 실패 - 요금제 초과"),
-    AI_RATE_LIMIT_EXCEEDED("AI_7", "OpenAI 호출 실패 - 속도 제한 초과"),
-    AI_REQUEST_TOO_LARGE("AI_8", "요청이 너무 커서 처리할 수 없습니다."),
-    AI_IMAGE_GENERATED_FAILED("AI_9", "이미지 생성에 실패하였습니다."),
-    AI_MASK_FAILED("AI_10", "마스크 생성에 실패하였습니다."),
-    AI_IMAGE_SIZE_ANALYSIS_FAILED("AI_11", "이미지 크기 분석에 실패하였습니다."),
-    AI_IMAGE_LAMA_FAILED("AI_12", "lama-cleaner 호출 실패");
-
+    // AI
+    AI_PROMPT_FAILED("AI_1", "AI 분석 요청에 실패하였습니다."),
+    AI_RATE_LIMIT_EXCEEDED("AI_2", "OpenAI 호출 실패 - 속도 제한 초과"),
+    AI_S3_UPLOAD_FAILED("AI_3", "AI 처리 결과 S3 업로드에 실패하였습니다."),
+    AI_IMAGE_READ_FAILED("AI_4", "이미지를 읽을 수 없습니다."),
+    AI_DETECTION_EMPTY("AI_5", "이미지에서 정리 대상 영역을 감지하지 못했습니다."),
+    AI_IMAGE_LAMA_FAILED("AI_6", "이미지 정리 처리(LAMA)에 실패하였습니다.");
 
     private final String code;
     private final String message;
 
-//    ErrorCode(String code, String message) {
-//        this.code = code;
-//        this.message = message;
-//    }
-//
-//    private static final Map<String, ErrorCode> ERROR_CODE_MAP =
-//            Stream.of(values())
-//                    .collect(Collectors.toMap(ErrorCode::getMessage, Function.identity()));
-//
-//    public static ErrorCode from(String message) {
-//        return ERROR_CODE_MAP.getOrDefault(message, INTERNAL_SERVER_ERROR);
-//    }
-    private static final Map<String, ErrorCode> ERROR_CODE_MAP = Collections.unmodifiableMap(Stream.of(values())
-        .collect(Collectors.toMap(ErrorCode::getMessage, Function.identity())));
-
+    private static final Map<String, ErrorCode> ERROR_CODE_MAP = Collections.unmodifiableMap(
+            Stream.of(values()).collect(Collectors.toMap(ErrorCode::getMessage, Function.identity()))
+    );
 
     public static ErrorCode from(final String message) {
-        if (ERROR_CODE_MAP.containsKey(message)) {
-            return ERROR_CODE_MAP.get(message);
-        }
-
-        return ErrorCode.INTERNAL_SERVER_ERROR;
+        return ERROR_CODE_MAP.getOrDefault(message, INTERNAL_SERVER_ERROR);
     }
-
 }
-

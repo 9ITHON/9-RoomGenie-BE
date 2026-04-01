@@ -80,7 +80,7 @@ public class ExternalAiClientImpl implements ExternalAiClient {
             log.error("OpenAI 사용량 초과: {}", e.getResponseBodyAsString());
             throw new AiException(ErrorCode.AI_RATE_LIMIT_EXCEEDED);
         } catch (IOException e) {
-            throw new AiException(ErrorCode.AI_PROMPT_FAILED);
+            throw new AiException(ErrorCode.AI_IMAGE_READ_FAILED);
         }
     }
 
@@ -178,7 +178,7 @@ public class ExternalAiClientImpl implements ExternalAiClient {
             amazonS3.putObject(bucket, key, inputStream, metadata);
         } catch (IOException e) {
             log.error("S3 업로드 실패: {}", e.getMessage(), e);
-            throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
+            throw new AiException(ErrorCode.AI_S3_UPLOAD_FAILED);
         }
 
         return amazonS3.getUrl(bucket, key).toString();
@@ -197,7 +197,7 @@ public class ExternalAiClientImpl implements ExternalAiClient {
         } else if (host.startsWith(bucket + ".")) {
             key = path.startsWith("/") ? path.substring(1) : path;
         } else {
-            throw new IllegalArgumentException("Invalid S3 URL format: " + imageUrl);
+            throw new AiException(ErrorCode.AI_IMAGE_READ_FAILED);
         }
 
         S3Object object = amazonS3.getObject(bucket, key);

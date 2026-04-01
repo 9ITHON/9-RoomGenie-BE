@@ -39,7 +39,7 @@ public class AiProcessor {
             List<Box> clutterBoxes = externalAiClient.detectClutterBoxes(originalImage.getContent());
 
             if (clutterBoxes.isEmpty()) {
-                throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
+                throw new AiException(ErrorCode.AI_DETECTION_EMPTY);
             }
 
             byte[] maskImage = MaskGenerator.createMask(clutterBoxes, width, height);
@@ -48,8 +48,8 @@ public class AiProcessor {
         } catch (AiException e) {
             throw e;
         } catch (Exception e) {
-            log.error("YOLO or LamaCleaner failed: {}", e.getMessage(), e);
-            throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
+            log.error("LAMA 이미지 정리 실패: {}", e.getMessage(), e);
+            throw new AiException(ErrorCode.AI_IMAGE_LAMA_FAILED);
         }
     }
 }

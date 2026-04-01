@@ -2,6 +2,8 @@ package team9.demo.repository.jpa.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import team9.demo.error.ConflictException;
+import team9.demo.error.ErrorCode;
 import team9.demo.implementation.contact.Contact;
 import team9.demo.implementation.contact.PhoneNumber;
 import team9.demo.jpaentity.user.UserJpaEntity;
@@ -31,7 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
                     ).map(UserJpaEntity::toUser) // ✅ 인스턴스 기준 메서드 참조
                     .orElse(null);
         }
-        throw new IllegalArgumentException("지원되지 않는 Contact 타입입니다.");
+        throw new ConflictException(ErrorCode.NOT_SUPPORT_CONTACT_TYPE);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }
 
-        throw new IllegalArgumentException("Unsupported contact type: " + contact.getClass().getSimpleName());
+        throw new ConflictException(ErrorCode.NOT_SUPPORT_CONTACT_TYPE);
     }
 
 

@@ -88,6 +88,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AiException.class)
     protected ResponseEntity<HttpResponse<ErrorResponse>>  handleAiException(AiException e) {
-        return handleException(e, e.getErrorCode(), HttpStatus.BAD_REQUEST);
+        return handleException(e, e.getErrorCode(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 }
