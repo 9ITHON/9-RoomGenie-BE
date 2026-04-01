@@ -19,33 +19,51 @@ dependencies{
 	testImplementation("io.rest-assured:rest-assured") // (optional if using RestAssuredMockMvc)
 	testImplementation("io.rest-assured:spring-mock-mvc") // (optional)
 }
-
+// 스니펫으로 의존성 꼬임
 test {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
 }
 
 asciidoctor {
-	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
+	// sourceDir, outputDir 등 기존 설정 유지
+	sourceDir = file('src/docs/asciidoc')
 	outputDir = file("$buildDir/docs/asciidoc")
-	inputs.dir snippetsDir
+
+	// snippetsDir가 있을 때만 inputs.dir 등록
+	if (snippetsDir.exists()) {
+		inputs.dir snippetsDir
+		attributes 'snippets': snippetsDir.absolutePath
+	} else {
+		// 디렉터리가 없으면 attributes 설정 제거 또는 기본값 사용 가능
+		attributes 'snippets': ''
+	}
+
 	dependsOn test
-
-	attributes 'snippets': snippetsDir.absolutePath
 	baseDirFollowsSourceDir()
+	// 빌드 문제 해결
+	attributes 'safe': 'unsafe'
+
+//	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
+//	outputDir = file("$buildDir/docs/asciidoc")
+//	inputs.dir snippetsDir
+//	dependsOn test
+//
+//	attributes 'snippets': snippetsDir.absolutePath
+//	baseDirFollowsSourceDir()
 }
+gradle.startParameter.warningMode = WarningMode.None
 
 
+//tasks.register('copyAsciidoctor', Copy) {
+//	dependsOn asciidoctor
+//	from layout.buildDirectory.dir('docs/asciidoc')
+//	into layout.projectDirectory.dir('src/main/resources/static/docs')
+//}
 
-tasks.register('copyAsciidoctor', Copy) {
-	dependsOn asciidoctor
-	from layout.buildDirectory.dir('docs/asciidoc')
-	into layout.projectDirectory.dir('src/main/resources/static/docs')
-}
-
-build {
-	dependsOn 'copyAsciidoctor'
-}
+//build {
+//	dependsOn 'copyAsciidoctor'
+//}
 
 bootJar {
 	enabled = true

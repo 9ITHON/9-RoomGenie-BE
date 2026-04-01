@@ -39,7 +39,8 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/logout",
                                 "/api/auth/reset/verify",
-                                "/docs/**"
+                                "/docs/**",
+                                "/health"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
