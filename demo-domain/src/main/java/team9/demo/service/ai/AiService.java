@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
-import team9.demo.implementation.ai.AiAppender;
+import team9.demo.implementation.ai.AiProcessor;
 import team9.demo.implementation.mission.TodayMissionReader;
 import team9.demo.implementation.mission.TodayMissionUpdater;
 import team9.demo.model.ai.analysis.ChatResponse;
@@ -27,7 +27,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class AiService {
 
-    private final AiAppender aiAppender;
+    private final AiProcessor aiAppender;
     private final UserService userService;
     private final TodayMissionUpdater todayMissionUpdater;
     private final TodayMissionReader todayMissionReader;

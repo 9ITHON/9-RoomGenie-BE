@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AiAppender {
+public class AiProcessor {
 
     private final ExternalAiClient externalAiClient;
     private final AiAnalysisGenerator aiAnalysisGenerator;

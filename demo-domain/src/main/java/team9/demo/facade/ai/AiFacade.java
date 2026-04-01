@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
-import team9.demo.implementation.ai.AiAppender;
+import team9.demo.implementation.ai.AiProcessor;
 import team9.demo.model.ai.analysis.ChatResponse;
 import team9.demo.model.media.FileCategory;
 import team9.demo.model.media.FileData;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class AiFacade {
 
     private final UserService userService;
-    private final AiAppender aiAppender;
+    private final AiProcessor aiAppender;
 
     public ChatResponse requestImageAnalysis(FileData file, String requestText, UserId userId) {
         Media media = userService.uploadFile(file, userId, FileCategory.USER);
