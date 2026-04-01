@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface CleaningMissionJpaRepository extends JpaRepository<CleaningMissionJpaEntity, String> {
 
+    @Query(value = "SELECT * FROM cleaning_mission ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    CleaningMissionJpaEntity findOneRandom();
 }

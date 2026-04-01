@@ -17,9 +17,8 @@ import java.util.UUID;
 @Table(
         name = "user_badge", schema = "roomgenie",
         indexes = {
-                @Index(name = "user_badge_idx_user_id", columnList = "userId, userBadgeId"),
-                @Index(name = "user_badge_idx_badge_id", columnList = "badgeId, BadgeId"),
-
+                @Index(name = "user_badge_idx_user_id", columnList = "userId"),
+                @Index(name = "user_badge_idx_badge_id", columnList = "badgeId")
         }
 )
 @Getter

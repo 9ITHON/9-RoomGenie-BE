@@ -1,6 +1,7 @@
 package team9.demo.implementation.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import team9.demo.error.ErrorCode;
 import team9.demo.error.NotFoundException;
@@ -21,7 +22,7 @@ import java.util.List;
 public class UserReader {
 
     private final UserRepository userRepository;
-    private final PushNotificationRepository pushNotificationRepository;
+
 
     public UserInfo readByContact(Contact contact, AccessStatus accessStatus) {
         UserInfo userInfo = userRepository.readByContact(contact, accessStatus);
@@ -30,4 +31,31 @@ public class UserReader {
         }
         return userInfo;
     }
+
+    public UserInfo readByEmail(String email, AccessStatus accessStatus) {
+        UserInfo userInfo = userRepository.readByEmail(email, accessStatus);
+        if (userInfo == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+        return userInfo;
+    }
+
+    public UserId searchUser(String name) {
+        return userRepository.searchUser(name)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    }
+    public UserInfo read(UserId userId, AccessStatus accessStatus) {
+        UserInfo userInfo = userRepository.read(userId, accessStatus);
+        if (userInfo == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+        return userInfo;
+    }
+
+
+    public List<UserInfo> reads(List<UserId> userIds, AccessStatus accessStatus){
+        return userRepository.reads(userIds, accessStatus);
+    }
+
+
 }

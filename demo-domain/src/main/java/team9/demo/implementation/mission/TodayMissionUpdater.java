@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import team9.demo.error.ConflictException;
 import team9.demo.error.ErrorCode;
 import team9.demo.error.NotFoundException;
+import team9.demo.model.mission.CleaningMission;
 import team9.demo.model.mission.MissionStatus;
 import team9.demo.model.user.UserId;
 import team9.demo.repository.mission.CleaningMissionRepository;
-import team9.demo.repository.mission.MissionTemplateRepository;
 import team9.demo.repository.mission.TodayMissionRepository;
 
 import java.time.LocalDateTime;
@@ -18,20 +18,11 @@ import java.time.LocalDateTime;
 public class TodayMissionUpdater {
 
     private final TodayMissionRepository todayMissionRepository;
-    private final MissionTemplateRepository missionTemplateRepository;
     private final CleaningMissionRepository cleaningMissionRepository;
 
 
     public void updateStatus(String todayMissionId, MissionStatus status) {
         todayMissionRepository.updateStatus(todayMissionId, status);
-    }
-
-    public String recommendOneCleaningMission(UserId userId) {
-
-        if(missionTemplateRepository.pickRandomMission() == null){
-            throw new NotFoundException(ErrorCode.MISSION_NOT_FOUND);
-        };
-        return missionTemplateRepository.pickRandomMission();
     }
 
     public void makeTodayMission(UserId userId, String content) {

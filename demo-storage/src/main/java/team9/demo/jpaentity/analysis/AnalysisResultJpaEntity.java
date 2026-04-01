@@ -28,7 +28,7 @@ public class AnalysisResultJpaEntity extends BaseEntity {
 
     private String userId;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String resultText;
 
 

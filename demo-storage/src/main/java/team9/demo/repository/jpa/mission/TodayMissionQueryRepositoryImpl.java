@@ -1,11 +1,9 @@
 package team9.demo.repository.jpa.mission;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import team9.demo.jpaentity.mission.CleaningMissionJpaEntity;
 import team9.demo.jpaentity.mission.TodayMissionJpaEntity;
-import team9.demo.jparepository.mission.CleaningMissionJpaRepository;
 import team9.demo.jparepository.mission.TodayMissionJpaRepository;
 import team9.demo.model.mission.TodayMissionInfo;
 import team9.demo.model.user.UserId;
@@ -17,17 +15,15 @@ import java.util.List;
 public class TodayMissionQueryRepositoryImpl implements TodayMissionQueryRepository {
 
     private final TodayMissionJpaRepository todayMissionJpaRepository;
-    private final CleaningMissionJpaRepository cleaningMissionJpaRepository;
 
     @Override
     public List<TodayMissionInfo> findAllByUserId(UserId userId) {
-        List<TodayMissionJpaEntity> missions = todayMissionJpaRepository.findAllByUserId(userId.getId());
+        List<Object[]> results = todayMissionJpaRepository.findAllWithMissionByUserId(userId.getId());
 
-        return missions.stream()
-                .map(todayMission -> {
-                    CleaningMissionJpaEntity mission = cleaningMissionJpaRepository.findById(todayMission.getMissionId())
-                            .orElseThrow(() -> new NotFoundException("해당 미션이 존재하지 않습니다: " + todayMission.getMissionId()));
-
+        return results.stream()
+                .map(row -> {
+                    TodayMissionJpaEntity todayMission = (TodayMissionJpaEntity) row[0];
+                    CleaningMissionJpaEntity mission = (CleaningMissionJpaEntity) row[1];
                     return TodayMissionInfo.of(
                             todayMission.getMissionId(),
                             mission.getContent(),
@@ -40,12 +36,15 @@ public class TodayMissionQueryRepositoryImpl implements TodayMissionQueryReposit
 
     @Override
     public TodayMissionInfo findByUserIdAndTodayMissionId(UserId userId, String todayMissionId) {
-        TodayMissionJpaEntity entity = todayMissionJpaRepository.findById(todayMissionId)
-                .filter(e -> e.getUserId().equals(userId.getId()))
-                .orElseThrow(() -> new NotFoundException("해당 유저 미션이 존재하지 않거나 권한이 없습니다."));
+        List<Object[]> results = todayMissionJpaRepository.findWithMissionByIdAndUserId(todayMissionId, userId.getId());
 
-        CleaningMissionJpaEntity mission = cleaningMissionJpaRepository.findById(entity.getMissionId())
-                .orElseThrow(() -> new NotFoundException("해당 미션 내용이 존재하지 않습니다."));
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException("해당 유저 미션이 존재하지 않거나 권한이 없습니다.");
+        }
+
+        Object[] row = results.get(0);
+        TodayMissionJpaEntity entity = (TodayMissionJpaEntity) row[0];
+        CleaningMissionJpaEntity mission = (CleaningMissionJpaEntity) row[1];
 
         return TodayMissionInfo.of(
                 entity.getMissionId(),
