@@ -164,7 +164,7 @@ public class MissionControllerTest extends RestDocsTest {
         MissionCustomRequest request = new MissionCustomRequest("나만의 미션: 빨래 개기");
 
         doNothing().when(missionService)
-                .makeCustomTodayMission(any(UserId.class), eq(request.getMission()));
+                .makeCustomTodayMission(any(UserId.class), eq(request.mission()));
 
         // when + then
         mockMvc.perform(
@@ -201,7 +201,7 @@ public class MissionControllerTest extends RestDocsTest {
 
         // verify
         verify(missionService, times(1))
-                .makeCustomTodayMission(any(UserId.class), eq(request.getMission()));
+                .makeCustomTodayMission(any(UserId.class), eq(request.mission()));
 
     }
 

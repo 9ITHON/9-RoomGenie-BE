@@ -9,9 +9,6 @@ include::{snippets}/ai-controller-test/image-analysis/http-request.adoc[]
 === 요청 파트(Request Parts)
 include::{snippets}/ai-controller-test/image-analysis/request-parts.adoc[]
 
-=== 요청 파라미터(Query Parameters)
-include::{snippets}/ai-controller-test/image-analysis/query-parameters.adoc[]
-
 === 응답(Response)
 include::{snippets}/ai-controller-test/image-analysis/http-response.adoc[]
 

@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import team9.demo.RestDocsTest;
+import team9.demo.TestDataFactory;
 import team9.demo.TestUserArgumentResolver;
 import team9.demo.controller.post.PostController;
 import team9.demo.error.ErrorCode;
@@ -76,9 +77,7 @@ public class PostControllerTest extends RestDocsTest {
     @Test
     @DisplayName("게시글 생성 - 성공")
     void createPost() throws Exception {
-        MockMultipartFile file = new MockMultipartFile(
-                "files", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "image-data".getBytes()
-        );
+        MockMultipartFile file = TestDataFactory.createTestImageFile("files", "test.png");
 
         PostId postId = PostId.of("newPostId");
         when(postService.createPost(any(), any(), any(), any(), any(), any())).thenReturn(postId);
@@ -101,11 +100,6 @@ public class PostControllerTest extends RestDocsTest {
                         requestParts(
                                 partWithName("files").description("업로드할 이미지 파일 (복수 가능)")
                         ),
-                        queryParameters(
-                                parameterWithName("title").description("게시글 제목"),
-                                parameterWithName("content").description("게시글 내용"),
-                                parameterWithName("friendIds").description("공개 대상 친구 ID 목록")
-                        ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data.postId").description("생성된 게시글 ID")
@@ -121,7 +115,7 @@ public class PostControllerTest extends RestDocsTest {
         PostInfo postInfo = PostInfo.of(
                 PostId.of("post1"), UserId.of("user1"),
                 LocalDateTime.of(2026, 4, 1, 10, 0, 0),
-                "청소 기록", "거실 청소!", 3
+                "청소 기록", "거실 청소!", 3L
         );
         Comment comment = Comment.of(
                 UserId.of("commenter1"), PostId.of("post1"),

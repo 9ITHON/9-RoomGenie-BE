@@ -9,9 +9,6 @@ include::{snippets}/post-controller-test/create-post/http-request.adoc[]
 === 요청 파트(Request Parts)
 include::{snippets}/post-controller-test/create-post/request-parts.adoc[]
 
-=== 요청 파라미터(Query Parameters)
-include::{snippets}/post-controller-test/create-post/query-parameters.adoc[]
-
 === 응답(Response)
 include::{snippets}/post-controller-test/create-post/http-response.adoc[]
 

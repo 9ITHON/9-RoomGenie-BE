@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import team9.demo.RestDocsTest;
+import team9.demo.TestDataFactory;
 import team9.demo.controller.ai.Aicontroller;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
@@ -74,9 +75,7 @@ public class AiControllerTest extends RestDocsTest {
     @Test
     @DisplayName("이미지 분석 요청 - 성공")
     void imageAnalysis() throws Exception {
-        MockMultipartFile image = new MockMultipartFile(
-                "image", "room.jpg", MediaType.IMAGE_JPEG_VALUE, "image-data".getBytes()
-        );
+        MockMultipartFile image = TestDataFactory.createTestImageFile("image", "room.png");
 
         ChatResponse chatResponse = new ChatResponse(
                 List.of(new Choice(0, new TextMessage("assistant", "방이 깨끗합니다.")))
@@ -99,9 +98,6 @@ public class AiControllerTest extends RestDocsTest {
                         requestParts(
                                 partWithName("image").description("분석할 방 이미지 파일")
                         ),
-                        queryParameters(
-                                parameterWithName("requestText").description("AI에게 전달할 분석 요청 텍스트")
-                        ),
                         responseFields(
                                 fieldWithPath("choices[]").description("AI 응답 목록"),
                                 fieldWithPath("choices[].index").description("응답 인덱스"),
@@ -116,12 +112,8 @@ public class AiControllerTest extends RestDocsTest {
     @Test
     @DisplayName("미션 이미지 비교 검증 - 성공")
     void verifyMissionByImage() throws Exception {
-        MockMultipartFile beforeImage = new MockMultipartFile(
-                "beforeImage", "before.jpg", MediaType.IMAGE_JPEG_VALUE, "before-data".getBytes()
-        );
-        MockMultipartFile afterImage = new MockMultipartFile(
-                "afterImage", "after.jpg", MediaType.IMAGE_JPEG_VALUE, "after-data".getBytes()
-        );
+        MockMultipartFile beforeImage = TestDataFactory.createTestImageFile("beforeImage", "before.png");
+        MockMultipartFile afterImage = TestDataFactory.createTestImageFile("afterImage", "after.png");
 
         when(aiService.verifyTodayMissionByImageWithContext(
                 eq("mission123"), any(FileData.class), any(FileData.class), any(UserId.class)
@@ -131,10 +123,10 @@ public class AiControllerTest extends RestDocsTest {
                         .file(beforeImage)
                         .file(afterImage)
                         .header("Authorization", "Bearer testToken")
-                        .accept(MediaType.TEXT_PLAIN)
+                        .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("미션 완료! 방이 깨끗하게 정리되었습니다."))
+                .andExpect(content().string("\"미션 완료! 방이 깨끗하게 정리되었습니다.\""))
                 .andDo(document(
                         "{class-name}/{method-name}",
                         requestPreprocessor(),
@@ -156,9 +148,7 @@ public class AiControllerTest extends RestDocsTest {
     @Test
     @DisplayName("방 이미지 정리 생성 - 성공")
     void generateCleanedRoomImage() throws Exception {
-        MockMultipartFile image = new MockMultipartFile(
-                "image", "messy-room.jpg", MediaType.IMAGE_JPEG_VALUE, "image-data".getBytes()
-        );
+        MockMultipartFile image = TestDataFactory.createTestImageFile("image", "messy-room.png");
 
         when(aiFacade.generateCleanedRoomImageWithLama(any(FileData.class), any(UserId.class)))
                 .thenReturn("https://s3.example.com/cleaned-room.jpg");
