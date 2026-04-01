@@ -13,11 +13,11 @@ public class FriendShipAppender {
 
     private final FriendShipRepository friendShipRepository;
 
-    public void createFriend(UserId userId, UserId targetId, String FriendName) {
+    public void createFriend(UserId userId, UserId targetId, String friendName) {
         if (userId.getId().equals(targetId.getId())) {
             throw new ConflictException(ErrorCode.FRIEND_MYSELF);
         }
-        friendShipRepository.createFriend(userId, targetId, FriendName);
+        friendShipRepository.createFriend(userId, targetId, friendName);
     }
 
 

@@ -1,8 +1,8 @@
 package team9.demo.service.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team9.demo.implementation.contact.ContactFormatter;
 import team9.demo.implementation.contact.PhoneNumber;
 import team9.demo.implementation.media.FileHandler;
@@ -12,13 +12,11 @@ import team9.demo.model.contact.LocalPhoneNumber;
 import team9.demo.model.media.FileCategory;
 import team9.demo.model.media.FileData;
 import team9.demo.model.media.Media;
-import team9.demo.model.mission.TodayMissionInfo;
 import team9.demo.model.notification.PushInfo;
 import team9.demo.model.user.AccessStatus;
 import team9.demo.model.user.User;
 import team9.demo.model.user.UserId;
 import team9.demo.model.user.UserInfo;
-import team9.demo.repository.user.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +24,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
 
     private final UserValidator userValidator;
     private final ContactFormatter contactFormatter;
@@ -49,6 +46,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public UserInfo createUser(
             LocalPhoneNumber localPhoneNumber,
             String appToken,
@@ -63,7 +61,6 @@ public class UserService {
         userAppender.appendUserPushToken(user, appToken, device);
         return user;
     }
-
 
     public void createPassword(UserId userId, String password) {
         userAppender.appendPassword(userId, password);
@@ -98,5 +95,4 @@ public class UserService {
                 .map(info -> User.of(info, info.getEmail()))
                 .toList();
     }
-
 }

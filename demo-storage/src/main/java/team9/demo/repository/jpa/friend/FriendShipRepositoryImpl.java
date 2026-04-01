@@ -22,7 +22,7 @@ public class FriendShipRepositoryImpl implements FriendShipRepository {
 
     @Override
     @Transactional
-    public void createFriend(UserId userId, UserId targetId, String FriendName) {
+    public void createFriend(UserId userId, UserId targetId, String friendName) {
         FriendShipId id = FriendShipId.of(userId, targetId);
 
         friendShipJpaRepository.findById(id)
@@ -35,7 +35,7 @@ public class FriendShipRepositoryImpl implements FriendShipRepository {
                     FriendShipJpaEntity created = FriendShipJpaEntity.generate(
                             userId,
                             targetId,
-                            FriendName,
+                            friendName,
                             FriendShipStatus.FRIEND
                     );
                     friendShipJpaRepository.save(created);

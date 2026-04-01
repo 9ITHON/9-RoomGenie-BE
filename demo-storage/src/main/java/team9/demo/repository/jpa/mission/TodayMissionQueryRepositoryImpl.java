@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 import team9.demo.jpaentity.mission.CleaningMissionJpaEntity;
 import team9.demo.jpaentity.mission.TodayMissionJpaEntity;
 import team9.demo.jparepository.mission.TodayMissionJpaRepository;
+import team9.demo.error.ErrorCode;
+import team9.demo.error.NotFoundException;
 import team9.demo.model.mission.TodayMissionInfo;
 import team9.demo.model.user.UserId;
 import team9.demo.repository.mission.TodayMissionQueryRepository;
@@ -39,7 +41,7 @@ public class TodayMissionQueryRepositoryImpl implements TodayMissionQueryReposit
         List<Object[]> results = todayMissionJpaRepository.findWithMissionByIdAndUserId(todayMissionId, userId.getId());
 
         if (results.isEmpty()) {
-            throw new IllegalArgumentException("해당 유저 미션이 존재하지 않거나 권한이 없습니다.");
+            throw new NotFoundException(ErrorCode.MISSION_NOT_FOUND);
         }
 
         Object[] row = results.get(0);

@@ -19,8 +19,8 @@ public class FriendShipService {
     private final FriendShipRemover friendShipRemover;
     private final FriendShipReader friendShipReader;
 
-    public void createFriend(UserId userId, UserId targetId, String FriendName){
-        friendShipAppender.createFriend(userId, targetId, FriendName);
+    public void createFriend(UserId userId, UserId targetId, String friendName){
+        friendShipAppender.createFriend(userId, targetId, friendName);
     }
 
     public void deleteFriend(UserId userId, UserId targetId){

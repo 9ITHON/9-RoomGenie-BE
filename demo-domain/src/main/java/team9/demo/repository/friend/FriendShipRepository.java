@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FriendShipRepository {
 
-    void createFriend(UserId userId, UserId targetId, String FriendName);
+    void createFriend(UserId userId, UserId targetId, String friendName);
     UserId remove(UserId userId, UserId targetId);
     List<FriendShip> reads(UserId userId);
 }

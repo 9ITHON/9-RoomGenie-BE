@@ -1,21 +1,14 @@
 package team9.demo.service.post;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Comments;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team9.demo.implementation.media.FileHandler;
 import team9.demo.implementation.post.PostAppender;
-import team9.demo.implementation.post.PostEnricher;
-import team9.demo.implementation.post.PostReader;
-import team9.demo.model.comment.Comment;
 import team9.demo.model.media.FileCategory;
 import team9.demo.model.media.FileData;
 import team9.demo.model.media.Media;
-import team9.demo.model.post.Post;
-import team9.demo.model.post.PostDetail;
 import team9.demo.model.post.PostId;
-import team9.demo.model.post.PostInfo;
 import team9.demo.model.user.UserId;
 
 import java.util.ArrayList;
@@ -27,10 +20,8 @@ public class PostService {
 
     private final FileHandler fileHandler;
     private final PostAppender postAppender;
-    private final PostReader postReader;
-    private final PostEnricher postEnricher;
 
-
+    @Transactional
     public PostId createPost(UserId userId, List<FileData> files, List<UserId> targetFriends, String title, String content, FileCategory category) {
         List<Media> medias = fileHandler.handleNewFiles(userId, files, category);
         PostId postId = postAppender.append(medias, userId, title, content);
@@ -39,12 +30,5 @@ public class PostService {
         targetUserIds.add(userId);
         postAppender.appendVisibility(postId, targetUserIds);
         return postId;
-
     }
-
-
-
-
-
 }
-

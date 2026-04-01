@@ -11,10 +11,11 @@ import team9.demo.jparepository.badge.BadgeJpaRepository;
 import team9.demo.jparepository.badge.UserBadgeJpaRepository;
 import team9.demo.jparepository.mission.TodayMissionJpaRepository;
 import team9.demo.jparepository.user.UserJpaRepository;
+import team9.demo.error.ErrorCode;
+import team9.demo.error.NotFoundException;
 import team9.demo.model.mission.MissionStatus;
 import team9.demo.model.user.UserId;
 import team9.demo.repository.mission.TodayMissionRepository;
-import team9.demo.repository.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,15 +50,14 @@ public class TodayMissionRepositoryImpl implements TodayMissionRepository {
     @Override
     public void updateStatus(String todayMissionId, MissionStatus status) {
         TodayMissionJpaEntity entity = todayMissionJpaRepository.findById(todayMissionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 미션이 존재하지 않습니다."));
-        entity.updateStatus(status); // 엔티티 내에서 상태 변경 메서드 제공
-        todayMissionJpaRepository.save(entity); // ✅ 명시적으로 save 호출
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MISSION_NOT_FOUND));
+        entity.updateStatus(status);
+        todayMissionJpaRepository.save(entity);
 
-        // ✅ 상태가 COMPLETED일 경우 코인 +5
         if (status == MissionStatus.COMPLETED) {
-            String userId = entity.getUserId(); // TodayMissionJpaEntity에 userId 필드가 있다고 가정
+            String userId = entity.getUserId();
             UserJpaEntity user = userJpaRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
             user.increasePoint(5L);
             userJpaRepository.save(user);
 
