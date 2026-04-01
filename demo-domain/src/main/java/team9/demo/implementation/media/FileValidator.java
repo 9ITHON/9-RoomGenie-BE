@@ -9,6 +9,7 @@ import team9.demo.model.media.FileData;
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class FileValidator {
 
@@ -21,7 +22,7 @@ public class FileValidator {
     }
 
     public void validateFileNameCorrect(FileData file) {
-        System.out.println("파일 이름: " + file.getName());
+        log.debug("파일 이름: {}", file.getName());
         if (file.getName() == null || file.getName().isEmpty()) {
             throw new ConflictException(ErrorCode.FILE_NAME_INCORRECT);
         }

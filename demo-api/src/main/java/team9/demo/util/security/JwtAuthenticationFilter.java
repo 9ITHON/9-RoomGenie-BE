@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,16 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final RequestMappingHandlerMapping handlerMapping;
 
-    public JwtAuthenticationFilter(JwtTokenUtil jwtTokenUtil, RequestMappingHandlerMapping handlerMapping) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.handlerMapping = handlerMapping;
-    }
+//    public JwtAuthenticationFilter(JwtTokenUtil jwtTokenUtil, RequestMappingHandlerMapping handlerMapping) {
+//        this.jwtTokenUtil = jwtTokenUtil;
+//        this.handlerMapping = handlerMapping;
+//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -47,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             request.setAttribute("userId", userId);
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             request.setAttribute("Exception", e);
         }
 
@@ -64,7 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/api/auth/login") ||
                 path.startsWith("/api/auth/logout") ||
                 path.startsWith("/ws-stomp") ||
-                path.startsWith("/docs");
+                path.startsWith("/docs") ||
+                path.startsWith("/health");
     }
 
     private String resolveToken(HttpServletRequest request) {

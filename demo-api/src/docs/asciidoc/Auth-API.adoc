@@ -1,7 +1,7 @@
 [[Auth-API]]
 = Auth API
 
-== 1. 회원가입 인증번호 전송 01/14 수정
+== 1. 회원가입 인증번호 전송 07/13 수정
 
 === 요청(Request)
 include::{snippets}/auth-controller-test/send-phone-verification/http-request.adoc[]
@@ -15,7 +15,7 @@ include::{snippets}/auth-controller-test/send-phone-verification/http-response.a
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/send-phone-verification/response-fields.adoc[]
 
-== 1-1 회원가입 인증번호 전송 (이미 가입된 번호) 01/14 수정
+== 1-1 회원가입 인증번호 전송 (이미 가입된 번호) 07/13 수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/send-phone-verification-already-created/http-response.adoc[]
@@ -23,7 +23,7 @@ include::{snippets}/auth-controller-test/send-phone-verification-already-created
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/send-phone-verification-already-created/response-fields.adoc[]
 
-== 2. 회원가입을 위한 휴대폰 인증 번호 확인 01/16 수정
+== 2. 회원가입을 위한 휴대폰 인증 번호 확인 08/05 수정
 
 === 요청(Request)
 include::{snippets}/auth-controller-test/sign-up/http-request.adoc[]
@@ -37,7 +37,7 @@ include::{snippets}/auth-controller-test/sign-up/http-response.adoc[]
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/sign-up/response-fields.adoc[]
 
-== 2-1 회원가입을 위한 휴대폰 인증 번호 확인 (이미 가입된 번호) 01/14 수정
+== 2-1 회원가입을 위한 휴대폰 인증 번호 확인 (이미 가입된 번호) 08/05  수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-already-created/http-response.adoc[]
@@ -45,7 +45,7 @@ include::{snippets}/auth-controller-test/sign-up-already-created/http-response.a
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/sign-up-already-created/response-fields.adoc[]
 
-== 2-2 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 불일치) 01/14 수정
+== 2-2 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 불일치) 08/05 수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/http-response.adoc[]
@@ -53,7 +53,7 @@ include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/http-re
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/response-fields.adoc[]
 
-== 2-3 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 만료) 01/14 수정
+== 2-3 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 만료) 08/05 수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-expired-verification-code/http-response.adoc[]
@@ -62,7 +62,7 @@ include::{snippets}/auth-controller-test/sign-up-expired-verification-code/http-
 include::{snippets}/auth-controller-test/sign-up-expired-verification-code/response-fields.adoc[]
 
 
-== 3. 비밀번호 생성 01/14 수정
+== 3. 비밀번호 생성 08/05 수정
 
 === 요청(Request)
 include::{snippets}/auth-controller-test/create-password/http-request.adoc[]
@@ -79,7 +79,7 @@ include::{snippets}/auth-controller-test/create-password/http-response.adoc[]
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/create-password/response-fields.adoc[]
 
-== 4. 로그인 01/16 수정
+== 4. 로그인 08/05 수정
 
 === 요청(Request)
 include::{snippets}/auth-controller-test/login/http-request.adoc[]
@@ -93,7 +93,7 @@ include::{snippets}/auth-controller-test/login/http-response.adoc[]
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/login/response-fields.adoc[]
 
-== 4-1 로그인 (비밀번호 불일치) 01/14 수정
+== 4-1 로그인 (비밀번호 불일치) 08/05 수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/login-wrong-password/http-response.adoc[]
@@ -101,7 +101,7 @@ include::{snippets}/auth-controller-test/login-wrong-password/http-response.adoc
 === 응답 필드 설명(Response Fields)
 include::{snippets}/auth-controller-test/login-wrong-password/response-fields.adoc[]
 
-== 4-2 로그인 (존재하지 않는 사용자) 01/14 수정
+== 4-2 로그인 (존재하지 않는 사용자) 08/05 수정
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/login-not-found-user/http-response.adoc[]

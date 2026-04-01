@@ -11,6 +11,8 @@ import team9.demo.model.user.UserId;
 import team9.demo.model.user.UserInfo;
 import team9.demo.repository.user.UserRepository;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class UserRepositoryImpl implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
+
 
     @Override
     public UserInfo readByContact(Contact contact, AccessStatus status) {
@@ -29,6 +32,14 @@ public class UserRepositoryImpl implements UserRepository {
                     .orElse(null);
         }
         throw new IllegalArgumentException("지원되지 않는 Contact 타입입니다.");
+    }
+
+    @Override
+    public UserInfo readByEmail(String email, AccessStatus status) {
+            return userJpaRepository.findUserJpaEntityByEmailAndStatus(
+                            email, status
+                    ).map(UserJpaEntity::toUser) // ✅ 인스턴스 기준 메서드 참조
+                    .orElse(null);
     }
 
     @Override
@@ -77,5 +88,48 @@ public class UserRepositoryImpl implements UserRepository {
                 .orElse(null);
     }
 
+    @Override
+    public void updateBirthdayAndEmail(UserId userId, String email, LocalDate birthday) {
+        userJpaRepository.findById(userId.getId())
+                .ifPresent(entity -> {
+                    entity.updateBirthday(birthday);
+                    entity.updateEmail(email);
+                    userJpaRepository.save(entity);
+
+                });
+    }
+
+
+    @Override
+    public Optional<UserId> searchUser(String name) {
+        return userJpaRepository.findByName(name).map(e -> UserId.of(e.getUserId()));
+    }
+
+    @Override
+    public boolean userExists(UserId userId) {
+        return userJpaRepository.findById(userId.getId()).isPresent();
+    }
+
+    @Override
+    public List<UserInfo> reads(List<UserId> userIds, AccessStatus accessStatus){
+        List<String> ids = userIds.stream()
+                .map(UserId::getId)
+                .toList();
+
+        List<UserJpaEntity> entities = userJpaRepository.findAllByUserIdInAndStatus(ids, accessStatus);
+
+        return entities.stream()
+                .map(UserJpaEntity::toUser)
+                .toList();
+
+
+
+    }
+    @Override
+    public UserInfo read(UserId userId, AccessStatus status){
+        return userJpaRepository.findByUserIdAndStatus(userId.getId(), status)
+                .map(UserJpaEntity::toUser)
+                .orElse(null);
+    }
 
 }

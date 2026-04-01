@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import team9.demo.jpaentity.common.BaseEntity;
 import team9.demo.model.post.PostId;
+import team9.demo.model.post.PostInfo;
 import team9.demo.model.user.UserId;
 
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class PostJpaEntity extends BaseEntity {
 
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private String userId;
@@ -39,33 +40,41 @@ public class PostJpaEntity extends BaseEntity {
     @ColumnDefault("0")
     private Long cheerCount;
 
-    private String beforeImageUrl;
 
-    private String afterImageUrl;
+
 
     @Builder
-    public PostJpaEntity(String postId, String title, String content, String userId, Long cheerCount, String beforeImageUrl, String afterImageUrl) {
+    public PostJpaEntity(String postId, String title, String content, String userId, Long cheerCount) {
         this.postId = postId != null ? postId : UUID.randomUUID().toString();
         this.title = title;
         this.content = content;
         this.userId = userId;
         this.cheerCount = cheerCount != null ? cheerCount : 0L;
-        this.beforeImageUrl = beforeImageUrl;
-        this.afterImageUrl = afterImageUrl;
     }
 
-    public static PostJpaEntity generate(String title, String content, UserId userId, String beforeImageUrl, String afterImageUrl) {
+    public static PostJpaEntity generate(String title, String content, UserId userId) {
         return PostJpaEntity.builder()
                 .title(title)
                 .content(content)
                 .userId(userId.getId())
                 .cheerCount(0L)
-                .beforeImageUrl(beforeImageUrl)
-                .afterImageUrl(afterImageUrl)
                 .build();
     }
 
     public PostId toPostId() {
         return PostId.of(postId);
     }
+
+    public PostInfo toPostInfo() {
+        return PostInfo.of(
+                PostId.of(postId),
+                UserId.of(userId),
+                getCreatedAt(),
+                title,
+                content,
+                cheerCount
+        );
+    }
+
+
 }

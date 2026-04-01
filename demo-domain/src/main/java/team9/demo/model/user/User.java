@@ -1,26 +1,21 @@
 package team9.demo.model.user;
 
+import lombok.Getter;
 import team9.demo.model.contact.LocalPhoneNumber;
 
+@Getter
 public class User {
 
     private final UserInfo info;
-    private final LocalPhoneNumber localPhoneNumber;
+    private final String email;
 
-    private User(UserInfo info, LocalPhoneNumber localPhoneNumber) {
+    private User(UserInfo info, String email) {
         this.info = info;
-        this.localPhoneNumber = localPhoneNumber;
+        this.email = email;
     }
 
-    public static User of(UserInfo info, LocalPhoneNumber localPhoneNumber) {
-        return new User(info, localPhoneNumber);
+    public static User of(UserInfo info, String email) {
+        return new User(info, email);
     }
 
-    public UserInfo getInfo() {
-        return info;
-    }
-
-    public LocalPhoneNumber getLocalPhoneNumber() {
-        return localPhoneNumber;
-    }
 }

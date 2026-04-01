@@ -2,6 +2,7 @@ package team9.demo.implementation.user;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import team9.demo.implementation.contact.Contact;
 import team9.demo.model.notification.PushInfo;
@@ -10,6 +11,7 @@ import team9.demo.model.user.UserInfo;
 import team9.demo.repository.push.PushNotificationRepository;
 import team9.demo.repository.user.UserRepository;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserAppender {
@@ -22,8 +24,7 @@ public class UserAppender {
     }
 
     public void appendPassword(UserId userId, String password) {
-        System.out.println("userId = " + userId);                // 로그1
-        System.out.println("userId.getId() = " + userId.getId()); // 로그2
+        log.debug("appendPassword - userId: {}", userId.getId());
         userRepository.appendPassword(userId, password);
 
     }

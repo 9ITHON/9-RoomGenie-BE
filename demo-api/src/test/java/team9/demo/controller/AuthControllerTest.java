@@ -26,7 +26,7 @@ import team9.demo.error.AuthorizationException;
 import team9.demo.error.ConflictException;
 import team9.demo.error.ErrorCode;
 import team9.demo.error.NotFoundException;
-import team9.demo.facade.AccountFacade;
+import team9.demo.facade.auth.AccountFacade;
 import team9.demo.model.auth.CredentialTarget;
 import team9.demo.model.auth.JwtToken;
 import team9.demo.model.user.UserId;
@@ -34,6 +34,10 @@ import team9.demo.service.auth.AuthService;
 import team9.demo.util.handler.GlobalExceptionHandler;
 import team9.demo.util.security.JwtTokenUtil;
 import team9.demo.util.security.UserArgumentResolver;
+
+import java.time.LocalDate;
+import java.util.Map;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 @ActiveProfiles("test")
@@ -127,13 +131,13 @@ public class AuthControllerTest extends RestDocsTest {
         UserId userId = TestDataFactory.createUserId();
 
         SignUpRequest.Phone requestBody = new SignUpRequest.Phone(
+                "testName",
                 "01012345678",
                 "82",
                 "123",
                 "testDeviceId",
                 "ios",
-                "testToken",
-                "testName"
+                "testToken"
         );
 
         when(accountFacade.createUser(any(), any(), any(), any(), any())).thenReturn(userId);
@@ -177,13 +181,13 @@ public class AuthControllerTest extends RestDocsTest {
     @DisplayName("휴대폰 인증번호 확인 실패 - 잘못된 인증번호")
     void signUpWrongVerificationCode() {
         SignUpRequest.Phone requestBody = new SignUpRequest.Phone(
+                "testName",
                 "01012345678",
                 "82",
                 "123",
                 "testDeviceId",
                 "ios",
-                "testToken",
-                "testName"
+                "testToken"
         );
 
         doThrow(new AuthorizationException(ErrorCode.WRONG_VERIFICATION_CODE))
@@ -216,13 +220,13 @@ public class AuthControllerTest extends RestDocsTest {
     @DisplayName("휴대폰 인증번호 확인 실패 - 잘못된 인증번호")
     void signUpExpiredVerificationCode() {
         SignUpRequest.Phone requestBody = new SignUpRequest.Phone(
+                "testName",
                 "01012345678",
                 "82",
                 "123",
                 "testDeviceId",
                 "ios",
-                "testToken",
-                "testName"
+                "testToken"
         );
 
         doThrow(new AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE))
@@ -256,13 +260,13 @@ public class AuthControllerTest extends RestDocsTest {
     @DisplayName("휴대폰 인증번호 확인 실패 - 이미 생성된 계정")
     void signUpAlreadyCreated() {
         SignUpRequest.Phone requestBody = new SignUpRequest.Phone(
+                "testName",
                 "01012345678",
                 "82",
                 "123",
                 "testDeviceId",
                 "ios",
-                "testToken",
-                "testName"
+                "testToken"
         );
 
         doThrow(new ConflictException(ErrorCode.USER_ALREADY_CREATED))
@@ -296,9 +300,19 @@ public class AuthControllerTest extends RestDocsTest {
     void createPassword() {
         String userId = "testUserId";
 
-        SignUpRequest.Password requestBody = new SignUpRequest.Password("testPassword");
+        // 생일을 문자열로 전달
+        String birth = "2001-05-25";
+        String email = "yhkim052556@naver.com";
+        String password = "testPassword";
 
-        doNothing().when(accountFacade).createPassword(any(), any());
+        // 문자열 기반 JSON 요청 본문 구성
+        Map<String, String> requestBody = Map.of(
+                "password", password,
+                "birth", birth,
+                "email", email
+        );
+
+        doNothing().when(accountFacade).createPassword(any(), eq(password), eq(email), eq(LocalDate.parse(birth)));
 
         ValidatableMockMvcResponse response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -315,12 +329,14 @@ public class AuthControllerTest extends RestDocsTest {
                         responsePreprocessor(),
                         requestAccessTokenFields(),
                         requestFields(
-                                fieldWithPath("password").description("생성할 비밀번호")
+                                fieldWithPath("password").description("생성할 비밀번호"),
+                                fieldWithPath("birth").description("생년월일 (yyyy-MM-dd 형식)"),
+                                fieldWithPath("email").description("이메일")
                         ),
                         responseSuccessFields()
                 ));
 
-        verify(accountFacade, times(1)).createPassword(any(), any());
+        verify(accountFacade, times(1)).createPassword(any(), eq(password), eq(email), eq(LocalDate.parse(birth)));
     }
 
 
@@ -332,7 +348,6 @@ public class AuthControllerTest extends RestDocsTest {
 
         LoginRequest requestBody = new LoginRequest(
                 "testPassword",
-                "82",
                 "01012345678",
                 "testDeviceId",
                 "ios",
@@ -358,8 +373,7 @@ public class AuthControllerTest extends RestDocsTest {
                         requestPreprocessor(),
                         responsePreprocessor(),
                         requestFields(
-                                fieldWithPath("phoneNumber").description("휴대폰 번호"),
-                                fieldWithPath("countryCode").description("국가 코드"),
+                                fieldWithPath("email").description("아이디"),
                                 fieldWithPath("password").description("비밀번호"),
                                 fieldWithPath("deviceId").description("디바이스 아이디(디바이스 식별을 위한 정보)"),
                                 fieldWithPath("provider").description("플랫폼(ios, android)"),
@@ -379,8 +393,7 @@ public class AuthControllerTest extends RestDocsTest {
     @DisplayName("로그인 실패 - 잘못된 비밀번호")
     void loginWrongPassword() {
         LoginRequest requestBody = new LoginRequest(
-                "01012345678",
-                "82",
+                "1234@naver.com",
                 "testPassword",
                 "testDeviceId",
                 "ios",
@@ -416,8 +429,7 @@ public class AuthControllerTest extends RestDocsTest {
     @DisplayName("로그인 실패 - 존재하지 않는 계정")
     void loginNotFoundUser() {
         LoginRequest requestBody = new LoginRequest(
-                "01012345678",
-                "82",
+                "1234@naver.com",
                 "testPassword",
                 "testDeviceId",
                 "ios",

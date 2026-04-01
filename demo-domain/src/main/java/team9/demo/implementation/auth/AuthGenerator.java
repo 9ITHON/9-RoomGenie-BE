@@ -16,8 +16,7 @@ public class AuthGenerator {
      * 인증번호 6자리 생성 (현재는 디버깅용으로 "000000" 반환)
      */
     public String generateVerificationCode() {
-        // 실제 랜덤 인증번호 생성: return String.valueOf(100000 + random.nextInt(900000));
-        return "000000";
+        return String.valueOf(100000 + random.nextInt(900000));
     }
 
     /**

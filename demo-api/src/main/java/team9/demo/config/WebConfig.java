@@ -3,6 +3,7 @@ package team9.demo.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team9.demo.util.converter.StringToFileCategoryConverter;
@@ -34,4 +35,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(userArgumentResolver); // ✅ 반드시 빈으로 주입된 resolver 사용
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")  // API 경로를 대상으로
+                .allowedOrigins("http://localhost:5173")  // 허용할 출처 (프론트엔드 주소)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true);  // 쿠키, 인증 헤더 허용 시 필요
+    }
+
 }

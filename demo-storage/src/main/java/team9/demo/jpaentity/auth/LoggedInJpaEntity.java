@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Table(
         name = "logged_in",
-        schema = "RoomGenie",
+        schema = "roomgenie",
         indexes = {
                 @Index(name = "logged_in_idx_refresh_token", columnList = "refreshToken"),
                 @Index(name = "logged_in_idx_refresh_token_user", columnList = "refreshToken, userId")

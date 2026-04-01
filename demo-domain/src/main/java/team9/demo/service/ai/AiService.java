@@ -1,6 +1,7 @@
 package team9.demo.service.ai;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
@@ -21,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AiService {
@@ -30,34 +32,7 @@ public class AiService {
     private final TodayMissionUpdater todayMissionUpdater;
     private final TodayMissionReader todayMissionReader;
 
-    public ChatResponse requestImageAnalysis(FileData file, String requestText, UserId userId) {
-        Media media = userService.uploadFile(file, userId, FileCategory.USER);
-        return aiAppender.requestImageAnalysis(media.getUrl(), requestText, userId);
 
-    }
-    // 텍스트 분석
-    public String requestImageAnalysisText(String imageUrl, UserId userId) {
-        ChatResponse analysisResponse = aiAppender.requestImageAnalysis(imageUrl, "해당 이미지를 보고 분석 후 어지럽혀진 방을 깔끔하게 정리할 수 있도록 가이드를 작성해 주세요.\n"
-                , userId);
-        return analysisResponse.getResultMessage();
-    }
-
-    // ✅ Service
-    public String generateCleanedRoomImageWithLama(FileData file, UserId userId) {
-        Media original = userService.uploadFile(file, userId, FileCategory.AI);
-
-        BufferedImage bufferedImage;
-        try (InputStream is = new ByteArrayInputStream(file.getContent())) {
-            bufferedImage = ImageIO.read(is);
-        } catch (IOException e) {
-            throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
-        }
-
-        int width = bufferedImage.getWidth();
-        int height = bufferedImage.getHeight();
-
-        return aiAppender.cleanImageWithLama(file, width, height, userId);
-    }
 
 
 
@@ -69,28 +44,21 @@ public class AiService {
         Media beforeMedia = userService.uploadFile(before, userId, FileCategory.USER);
         Media afterMedia = userService.uploadFile(after, userId, FileCategory.USER);
 
-        // 3. AI 프롬프트 생성
-        String prompt = "오늘의 미션은 다음과 같습니다: [" + missionContent + "]. 아래의 두 이미지를 비교해 이 미션이 성공적으로 수행되었는지 평가해주세요." +
-                "방이 깨끗한거랑 미션성공여부랑 다르니 미션에 집중해주세요";
+        // 3. AI 프롬프트 생성 - 구조화된 응답을 요청
+        String prompt = "오늘의 미션은 다음과 같습니다: [" + missionContent + "]. " +
+                "아래의 두 이미지를 비교해 이 미션이 성공적으로 수행되었는지 평가해주세요. " +
+                "방이 깨끗한 것과 미션 성공 여부는 다르니 미션에 집중해주세요. " +
+                "반드시 응답의 첫 줄에 [RESULT:SUCCESS] 또는 [RESULT:FAIL]을 포함해주세요. " +
+                "그 다음 줄부터 평가 내용을 작성해주세요.";
 
         // 4. 분석 요청
         ChatResponse response = aiAppender.requestComparisonAnalysis(beforeMedia.getUrl(), afterMedia.getUrl(), prompt);
         String message = response.getResultMessage();
 
-        // 5. 상태 판단 및 반영
-        String lower = message.toLowerCase();
+        // 5. 상태 판단 및 반영 - 구조화된 태그 기반 판단
+        boolean isComplete = message.contains("[RESULT:SUCCESS]");
 
-        boolean isComplete = (
-                lower.contains("완료") ||
-                        lower.contains("성공") ||
-                        lower.contains("정리되었습니다") ||
-                        lower.contains("정리가 잘 되어")
-        ) &&
-                !lower.contains("판단하기 어렵") &&
-                !lower.contains("알 수 없") &&
-                !lower.contains("불분명");
-
-        System.out.println("완료 여부 = " + isComplete);
+        log.info("미션 완료 여부: {}, todayMissionId: {}", isComplete, todayMissionId);
         MissionStatus resultStatus = isComplete ? MissionStatus.COMPLETED : MissionStatus.ONGOING;
         todayMissionUpdater.updateStatus(todayMissionId, resultStatus);
 

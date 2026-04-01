@@ -31,7 +31,7 @@ public class CommentJpaEntity extends BaseEntity {
     @Column(nullable = false)
     private String userId;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Builder

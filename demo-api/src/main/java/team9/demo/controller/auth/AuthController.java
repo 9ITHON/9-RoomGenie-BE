@@ -7,7 +7,7 @@ import team9.demo.dto.request.auth.LoginRequest;
 import team9.demo.dto.request.auth.SignUpRequest;
 import team9.demo.dto.request.auth.VerificationRequest;
 import team9.demo.dto.response.auth.TokenResponse;
-import team9.demo.facade.AccountFacade;
+import team9.demo.facade.auth.AccountFacade;
 import team9.demo.model.auth.CredentialTarget;
 import team9.demo.model.auth.JwtToken;
 import team9.demo.model.user.UserId;
@@ -57,14 +57,14 @@ public class AuthController {
             @RequestBody SignUpRequest.Password request,
             @CurrentUser UserId userId
     ) {
-        accountFacade.createPassword(userId, request.getPassword());
+        accountFacade.createPassword(userId, request.getPassword(), request.getEmail(), request.getBirth());
         return ResponseHelper.successCreateOnly();
     }
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse<TokenResponse>> login(@RequestBody LoginRequest request) {
         UserId userId = accountFacade.login(
-                request.toLocalPhoneNumber(),
+                request.toEmail(),
                 request.toPassword(),
                 request.toDevice(),
                 request.toAppToken()

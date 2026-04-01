@@ -121,4 +121,8 @@ public class UserJpaEntity extends BaseEntity {
         this.name = name;
     }
 
+    public void updateBirthday(LocalDate birth) { this.birth = birth; }
+
+    public void updateEmail(String email) { this.email = email; }
+
 }

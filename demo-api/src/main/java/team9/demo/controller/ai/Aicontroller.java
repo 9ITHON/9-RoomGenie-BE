@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team9.demo.dto.response.ChatGPTResponse;
+import team9.demo.facade.ai.AiFacade;
 import team9.demo.model.ai.analysis.ChatResponse;
 import team9.demo.model.media.FileData;
 import team9.demo.model.user.UserId;
@@ -20,11 +21,12 @@ import java.io.IOException;
 public class Aicontroller {
 
     private final AiService aiService;
+    private final AiFacade aiFacade;
 
     @PostMapping("/image/analysis")
     public ChatGPTResponse imageAnalysis(@RequestParam MultipartFile image, @RequestParam String requestText, @CurrentUser UserId userId) throws IOException {// 수동 변환
         FileData converted = FileHelper.convertMultipartFileToFileData(image);
-        ChatResponse result = aiService.requestImageAnalysis(converted, requestText, userId);
+        ChatResponse result = aiFacade.requestImageAnalysis(converted, requestText, userId);
         return ChatGPTResponse.of(result.getResultMessage());
     }
 //    // request부분 DB에서 랜덤추출
@@ -58,10 +60,10 @@ public class Aicontroller {
             @CurrentUser UserId userId
     ) throws IOException {
         FileData fileData = FileHelper.convertMultipartFileToFileData(image);
-        String cleanedImageUrl = aiService.generateCleanedRoomImageWithLama(fileData, userId);
+        String cleanedImageUrl = aiFacade.generateCleanedRoomImageWithLama(fileData, userId);
 
         // GPT 분석 텍스트 생성 예시 (직접 호출하거나 미리 준비)
-        String gptAnalysis = aiService.requestImageAnalysisText(cleanedImageUrl, userId);
+        String gptAnalysis = aiFacade.requestImageAnalysisText(cleanedImageUrl, userId);
 
         return ChatGPTResponse.of(cleanedImageUrl, gptAnalysis);
     }

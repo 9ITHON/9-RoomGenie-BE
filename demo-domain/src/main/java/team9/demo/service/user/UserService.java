@@ -20,6 +20,7 @@ import team9.demo.model.user.UserId;
 import team9.demo.model.user.UserInfo;
 import team9.demo.repository.user.UserRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,6 +34,7 @@ public class UserService {
     private final UserAppender userAppender;
     private final UserRemover userRemover;
     private final UserReader userReader;
+    private final UserUpdater userUpdater;
 
     public Media uploadFile(FileData file, UserId userId, FileCategory category) {
         return fileHandler.handleNewFile(userId, file, category);
@@ -55,6 +57,7 @@ public class UserService {
     ) {
         PhoneNumber phoneNumber = contactFormatter.formatContact(localPhoneNumber);
         userValidator.isNotAlreadyCreated(phoneNumber);
+        userValidator.nameExists(userName);
         UserInfo user = userAppender.append(phoneNumber, userName);
         userRemover.removePushToken(device);
         userAppender.appendUserPushToken(user, appToken, device);
@@ -66,15 +69,28 @@ public class UserService {
         userAppender.appendPassword(userId, password);
     }
 
-    public User getUserByContact(LocalPhoneNumber localPhoneNumber, AccessStatus accessStatus) {
-        PhoneNumber phoneNumber = contactFormatter.formatContact(localPhoneNumber);
-        UserInfo userInfo = userReader.readByContact(phoneNumber, accessStatus);
-        return User.of(userInfo, localPhoneNumber);
+    public User getUserByEmail(String email, AccessStatus accessStatus) {
+        UserInfo userInfo = userReader.readByEmail(email, accessStatus);
+        return User.of(userInfo, email);
     }
 
     public void createDeviceInfo(UserInfo userInfo, PushInfo.Device device, String appToken) {
         userAppender.appendUserPushToken(userInfo, appToken, device);
     }
 
+    public void updateBirthdayAndEmail(UserId userId, String email, LocalDate birthday) {
+        userUpdater.updateBirthdayAndEmail(userId, email, birthday);
+    }
+
+    public UserId searchUser(String name) {
+        return userReader.searchUser(name);
+    }
+
+    public List<User> getUsers(List<UserId> userIds, AccessStatus accessStatus) {
+        List<UserInfo> userInfos = userReader.reads(userIds, accessStatus);
+        return userInfos.stream()
+                .map(info -> User.of(info, info.getEmail()))
+                .toList();
+    }
 
 }

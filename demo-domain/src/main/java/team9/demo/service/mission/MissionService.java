@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import team9.demo.implementation.mission.TodayMissionReader;
 import team9.demo.implementation.mission.TodayMissionUpdater;
+import team9.demo.model.mission.CleaningMission;
+import team9.demo.model.mission.MissionDto;
 import team9.demo.model.mission.TodayMissionInfo;
 import team9.demo.model.user.UserId;
 
@@ -16,8 +18,8 @@ public class MissionService {
     private final TodayMissionUpdater todayMissionUpdater;
     private final TodayMissionReader todayMissionReader;
 
-    public String recommendOneMission(UserId userId) {
-        return todayMissionUpdater.recommendOneCleaningMission(userId);
+    public CleaningMission recommendOneMission(UserId userId) {
+        return todayMissionReader.recommendOneCleaningMission(userId);
     }
 
     public void makeCustomTodayMission(UserId userId, String missionText) {
