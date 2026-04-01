@@ -22,16 +22,16 @@ import java.io.IOException;
 public class AiFacade {
 
     private final UserService userService;
-    private final AiProcessor aiAppender;
+    private final AiProcessor aiProcessor;
 
     public ChatResponse requestImageAnalysis(FileData file, String requestText, UserId userId) {
         Media media = userService.uploadFile(file, userId, FileCategory.USER);
-        return aiAppender.requestImageAnalysis(media.getUrl(), requestText, userId);
+        return aiProcessor.requestImageAnalysis(media.getUrl(), requestText, userId);
     }
 
     public String requestImageAnalysisText(String imageUrl, UserId userId) {
         String prompt = "해당 이미지를 보고 분석 후 어지럽혀진 방을 깔끔하게 정리할 수 있도록 가이드를 작성해 주세요.";
-        ChatResponse response = aiAppender.requestImageAnalysis(imageUrl, prompt, userId);
+        ChatResponse response = aiProcessor.requestImageAnalysis(imageUrl, prompt, userId);
         return response.getResultMessage();
     }
 
@@ -43,7 +43,7 @@ public class AiFacade {
             if (bufferedImage == null) {
                 throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
             }
-            return aiAppender.cleanImageWithLama(file, bufferedImage.getWidth(), bufferedImage.getHeight(), userId);
+            return aiProcessor.cleanImageWithLama(file, bufferedImage.getWidth(), bufferedImage.getHeight(), userId);
         } catch (IOException e) {
             throw new AiException(ErrorCode.AI_IMAGE_GENERATED_FAILED);
         }

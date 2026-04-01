@@ -27,7 +27,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class AiService {
 
-    private final AiProcessor aiAppender;
+    private final AiProcessor aiProcessor;
     private final UserService userService;
     private final TodayMissionUpdater todayMissionUpdater;
     private final TodayMissionReader todayMissionReader;
@@ -52,7 +52,7 @@ public class AiService {
                 "그 다음 줄부터 평가 내용을 작성해주세요.";
 
         // 4. 분석 요청
-        ChatResponse response = aiAppender.requestComparisonAnalysis(beforeMedia.getUrl(), afterMedia.getUrl(), prompt);
+        ChatResponse response = aiProcessor.requestComparisonAnalysis(beforeMedia.getUrl(), afterMedia.getUrl(), prompt);
         String message = response.getResultMessage();
 
         // 5. 상태 판단 및 반영 - 구조화된 태그 기반 판단
