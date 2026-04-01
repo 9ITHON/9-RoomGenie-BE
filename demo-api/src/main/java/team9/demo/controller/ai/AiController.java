@@ -9,7 +9,6 @@ import team9.demo.facade.ai.AiFacade;
 import team9.demo.model.ai.analysis.ChatResponse;
 import team9.demo.model.media.FileData;
 import team9.demo.model.user.UserId;
-import team9.demo.service.ai.AiService;
 import team9.demo.util.helper.FileHelper;
 import team9.demo.util.security.CurrentUser;
 
@@ -20,7 +19,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AiController {
 
-    private final AiService aiService;
     private final AiFacade aiFacade;
 
     @PostMapping("/image/analysis")
@@ -37,7 +35,7 @@ public class AiController {
             @RequestParam MultipartFile afterImage,
             @CurrentUser UserId userId
     ) throws IOException {
-        String result = aiService.verifyTodayMissionByImageWithContext(
+        String result = aiFacade.verifyTodayMissionByImage(
                 todayMissionId,
                 FileHelper.convertMultipartFileToFileData(beforeImage),
                 FileHelper.convertMultipartFileToFileData(afterImage),
@@ -46,7 +44,6 @@ public class AiController {
         return ResponseEntity.ok(result);
     }
 
-
     @PostMapping("/image/generate")
     public ChatGPTResponse generateCleanedRoomImage(
             @RequestParam MultipartFile image,
@@ -54,12 +51,7 @@ public class AiController {
     ) throws IOException {
         FileData fileData = FileHelper.convertMultipartFileToFileData(image);
         String cleanedImageUrl = aiFacade.generateCleanedRoomImageWithLama(fileData, userId);
-
         String gptAnalysis = aiFacade.requestImageAnalysisText(cleanedImageUrl, userId);
-
         return ChatGPTResponse.of(cleanedImageUrl, gptAnalysis);
     }
-
-
-
 }

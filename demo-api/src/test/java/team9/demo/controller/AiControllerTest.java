@@ -25,7 +25,6 @@ import team9.demo.model.ai.analysis.Choice;
 import team9.demo.model.ai.analysis.TextMessage;
 import team9.demo.model.media.FileData;
 import team9.demo.model.user.UserId;
-import team9.demo.service.ai.AiService;
 import team9.demo.util.handler.GlobalExceptionHandler;
 import team9.demo.util.security.UserArgumentResolver;
 
@@ -45,15 +44,13 @@ import static team9.demo.RestDocsUtils.*;
 @ActiveProfiles("test")
 public class AiControllerTest extends RestDocsTest {
 
-    private AiService aiService;
     private AiFacade aiFacade;
     private MockMvc standaloneMockMvc;
 
     @BeforeEach
     void setUpController(RestDocumentationContextProvider restDocumentation) {
-        aiService = mock(AiService.class);
         aiFacade = mock(AiFacade.class);
-        AiController controller = new AiController(aiService, aiFacade);
+        AiController controller = new AiController(aiFacade);
 
         UserId userId = UserId.of("testUserId");
         SecurityContextHolder.getContext().setAuthentication(
@@ -115,7 +112,7 @@ public class AiControllerTest extends RestDocsTest {
         MockMultipartFile beforeImage = TestDataFactory.createTestImageFile("beforeImage", "before.png");
         MockMultipartFile afterImage = TestDataFactory.createTestImageFile("afterImage", "after.png");
 
-        when(aiService.verifyTodayMissionByImageWithContext(
+        when(aiFacade.verifyTodayMissionByImage(
                 eq("mission123"), any(FileData.class), any(FileData.class), any(UserId.class)
         )).thenReturn("미션 완료! 방이 깨끗하게 정리되었습니다.");
 
@@ -140,7 +137,7 @@ public class AiControllerTest extends RestDocsTest {
                         )
                 ));
 
-        verify(aiService, times(1)).verifyTodayMissionByImageWithContext(
+        verify(aiFacade, times(1)).verifyTodayMissionByImage(
                 eq("mission123"), any(FileData.class), any(FileData.class), any(UserId.class)
         );
     }
