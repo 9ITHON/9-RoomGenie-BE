@@ -98,7 +98,8 @@ public class JwtTokenUtil {
     }
 
     public String cleanedToken(String token) {
-        return token.replaceFirst("(?i)^Bearer ", "").trim();
+        return token.replaceFirst("Bearer ", "");
+        //return token.replaceFirst("(?i)^Bearer ", "").trim();
     }
 
     public Pair<JwtToken, UserId> refresh(String token) {

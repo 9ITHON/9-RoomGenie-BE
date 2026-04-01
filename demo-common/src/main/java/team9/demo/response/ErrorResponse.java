@@ -7,6 +7,8 @@ import team9.demo.error.ErrorCode;
 @Getter
 @AllArgsConstructor
 public class ErrorResponse {
+
+//    private final String error; // 무슨 에러인지
     private final String errorCode;
     private final String message;
 

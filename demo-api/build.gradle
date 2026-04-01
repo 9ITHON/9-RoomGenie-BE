@@ -18,34 +18,32 @@ dependencies{
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 	testImplementation("io.rest-assured:rest-assured") // (optional if using RestAssuredMockMvc)
 	testImplementation("io.rest-assured:spring-mock-mvc") // (optional)
+	testImplementation 'com.jayway.jsonpath:json-path:2.9.0' // json 이슈 해결책
+	testImplementation 'org.skyscreamer:jsonassert:1.5.1'
 }
-
+// 스니펫으로 의존성 꼬임
 test {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
 }
 
 asciidoctor {
-	sourceDir = file('src/docs/asciidoc') // 👈 index.adoc 위치 지정
+	sourceDir = file('src/docs/asciidoc')
 	outputDir = file("$buildDir/docs/asciidoc")
-	inputs.dir snippetsDir
-	dependsOn test
 
-	attributes 'snippets': snippetsDir.absolutePath
+	inputs.dir snippetsDir
+	inputs.dir sourceDir
+
+	attributes(
+			'snippets': snippetsDir.absolutePath,
+			'safe': 'unsafe'
+	)
+
+	dependsOn test
 	baseDirFollowsSourceDir()
 }
 
-
-
-tasks.register('copyAsciidoctor', Copy) {
-	dependsOn asciidoctor
-	from layout.buildDirectory.dir('docs/asciidoc')
-	into layout.projectDirectory.dir('src/main/resources/static/docs')
-}
-
-build {
-	dependsOn 'copyAsciidoctor'
-}
+gradle.startParameter.warningMode = WarningMode.None
 
 bootJar {
 	enabled = true

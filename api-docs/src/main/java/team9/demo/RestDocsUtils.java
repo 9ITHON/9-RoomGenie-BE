@@ -31,6 +31,7 @@ public class RestDocsUtils {
         return Preprocessors.preprocessResponse(Preprocessors.prettyPrint());
     }
 
+
     public static ResponseFieldsSnippet responseSuccessFields() {
         return responseFields(
                 fieldWithPath("status").description("상태 코드"),

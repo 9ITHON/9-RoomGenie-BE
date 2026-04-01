@@ -3,12 +3,16 @@ package team9.demo.controller.mission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team9.demo.dto.request.mission.MissionCustomRequest;
 import team9.demo.dto.request.mission.TodayMissionAcceptRequest;
-import team9.demo.dto.request.mission.TodayMissionRequest;
+import team9.demo.dto.response.mission.MissionRecommendResponse;
 import team9.demo.dto.response.mission.TodayMissionResponse;
+import team9.demo.model.mission.CleaningMission;
+import team9.demo.model.mission.MissionDto;
 import team9.demo.model.mission.TodayMissionInfo;
 import team9.demo.model.user.UserId;
 import team9.demo.response.HttpResponse;
+import team9.demo.response.SuccessCreateResponse;
 import team9.demo.response.SuccessOnlyResponse;
 import team9.demo.service.mission.MissionService;
 import team9.demo.util.helper.ResponseHelper;
@@ -24,45 +28,47 @@ public class MissionController {
 
     private final MissionService missionService;
 
-    @GetMapping("/recommend")
-    public ResponseEntity<Map<String, String>> recommendTodayMission(@CurrentUser UserId userId) {
-        String mission = missionService.recommendOneMission(userId);
-        return ResponseEntity.ok(Map.of("mission", mission));
+    @GetMapping("/recommend") //Map<String, Object>
+    public ResponseEntity<HttpResponse<MissionRecommendResponse>> recommendTodayMission(@CurrentUser UserId userId) {
+        CleaningMission mission = missionService.recommendOneMission(userId);
+        return ResponseHelper.success(MissionRecommendResponse.from(mission));
     }
+
 
     @PostMapping("")
-    public ResponseEntity<Void>  makeCustomTodayMission(
+    public ResponseEntity<HttpResponse<SuccessCreateResponse>>  makeCustomTodayMission(
             @CurrentUser UserId userId,
-            @RequestBody TodayMissionRequest request
+            @RequestBody MissionCustomRequest request
     ) {
-        missionService.makeCustomTodayMission(userId, request.getMission());
-        return ResponseEntity.ok().build();
+        missionService.makeCustomTodayMission(userId, request.mission());
+        return ResponseHelper.successCreateOnly();
     }
 
-    @PostMapping("/accept")
-    public ResponseEntity<Void> acceptRecommendedTodayMission(
+    @PostMapping("/accept") // 미션은 중복 등록 가능
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> acceptRecommendedTodayMission(
             @CurrentUser UserId userId,
             @RequestBody TodayMissionAcceptRequest request
     ) {
-        missionService.acceptRecommendedTodayMission(userId, request.getMissionId());
-        return ResponseEntity.ok().build();
+        missionService.acceptRecommendedTodayMission(userId, request.missionId());
+        return ResponseHelper.successOnly();
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<TodayMissionResponse>> getTodayMissions(@CurrentUser UserId userId) {
+    public ResponseEntity<HttpResponse<List<TodayMissionResponse>>> getTodayMissions(@CurrentUser UserId userId) {
         List<TodayMissionInfo> missionInfos = missionService.getTodayMissions(userId);
         List<TodayMissionResponse> responses = missionInfos.stream()
                 .map(TodayMissionResponse::from)
                 .toList();
-        return ResponseEntity.ok(responses);
+        return ResponseHelper.success(responses);
     }
+
     @GetMapping("/{todayMissionId}/")
-    public ResponseEntity<TodayMissionResponse> getTodayMission(
+    public ResponseEntity<HttpResponse<TodayMissionResponse>> getTodayMission(
             @CurrentUser UserId userId,
             @PathVariable String todayMissionId
     ) {
         TodayMissionInfo info = missionService.getTodayMission(userId, todayMissionId);
-        return ResponseEntity.ok(TodayMissionResponse.from(info));
+        return ResponseHelper.success(TodayMissionResponse.from(info));
     }
 
 }

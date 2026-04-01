@@ -3,13 +3,16 @@ package team9.demo.error;
 
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
+@RequiredArgsConstructor
 public enum ErrorCode {
     // Auth errors
     WRONG_VERIFICATION_CODE("AUTH_1", "인증 번호가 틀렸습니다."),
@@ -17,7 +20,7 @@ public enum ErrorCode {
     TOKEN_EXPIRED("AUTH_3", "토큰이 만료되었습니다."),
     INVALID_TOKEN("AUTH_4", "토큰을 확인해주세요"),
     NOT_AUTHORIZED("AUTH_5", "인증되지 않았습니다."),
-    PHONE_NUMBER_IS_USED("AUTH_5", "해당 전화번호로 이미 다른 사람이 사용중입니다."),
+    PHONE_NUMBER_IS_USED("AUTH_12", "해당 전화번호로 이미 다른 사람이 사용중입니다."),
     EMAIL_ADDRESS_IS_USED("AUTH_6", "해당 이메일로 이미 다른 사람이 사용중입니다."),
     EMAIL_NOT_FOUND("AUTH_7", "해당 이메일을 찾을 수 없습니다."),
     PHONE_NUMBER_NOT_FOUND("AUTH_8", "해당 전화번호를 찾을 수 없습니다."),
@@ -45,6 +48,7 @@ public enum ErrorCode {
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
     USER_NOT_CREATED("USER_4", "가입되지 않은 사용자입니다."),
     USER_PUSH_TOKEN_NOT_FOUND("USER_5", "푸시 토큰을 찾을 수 없음."),
+    USER_NAME_OVERLAP("USER_6", "유저 이름이 중복됨"),
 
     FRIEND_NOT_FOUND("FRIEND_1", "친구를 찾을 수 없음."),
     FRIEND_ALREADY_CREATED("FRIEND_2", "이미 추가된 친구입니다."),
@@ -86,17 +90,29 @@ public enum ErrorCode {
     private final String code;
     private final String message;
 
-    ErrorCode(String code, String message) {
-        this.code = code;
-        this.message = message;
+//    ErrorCode(String code, String message) {
+//        this.code = code;
+//        this.message = message;
+//    }
+//
+//    private static final Map<String, ErrorCode> ERROR_CODE_MAP =
+//            Stream.of(values())
+//                    .collect(Collectors.toMap(ErrorCode::getMessage, Function.identity()));
+//
+//    public static ErrorCode from(String message) {
+//        return ERROR_CODE_MAP.getOrDefault(message, INTERNAL_SERVER_ERROR);
+//    }
+    private static final Map<String, ErrorCode> ERROR_CODE_MAP = Collections.unmodifiableMap(Stream.of(values())
+        .collect(Collectors.toMap(ErrorCode::getMessage, Function.identity())));
+
+
+    public static ErrorCode from(final String message) {
+        if (ERROR_CODE_MAP.containsKey(message)) {
+            return ERROR_CODE_MAP.get(message);
+        }
+
+        return ErrorCode.INTERNAL_SERVER_ERROR;
     }
 
-    private static final Map<String, ErrorCode> ERROR_CODE_MAP =
-            Stream.of(values())
-                    .collect(Collectors.toMap(ErrorCode::getMessage, Function.identity()));
-
-    public static ErrorCode from(String message) {
-        return ERROR_CODE_MAP.getOrDefault(message, INTERNAL_SERVER_ERROR);
-    }
 }
 
