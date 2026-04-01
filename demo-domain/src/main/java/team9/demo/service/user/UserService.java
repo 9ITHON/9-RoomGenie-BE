@@ -69,6 +69,12 @@ public class UserService {
         userAppender.appendPassword(userId, password);
     }
 
+    public User getUserByContact(LocalPhoneNumber localPhoneNumber, AccessStatus accessStatus) {
+        PhoneNumber phoneNumber = contactFormatter.formatContact(localPhoneNumber);
+        UserInfo userInfo = userReader.readByContact(phoneNumber, accessStatus);
+        return User.of(userInfo, userInfo.getEmail());
+    }
+
     public User getUserByEmail(String email, AccessStatus accessStatus) {
         UserInfo userInfo = userReader.readByEmail(email, accessStatus);
         return User.of(userInfo, email);

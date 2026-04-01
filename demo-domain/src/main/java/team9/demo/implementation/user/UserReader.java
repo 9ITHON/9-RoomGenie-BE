@@ -24,6 +24,14 @@ public class UserReader {
     private final UserRepository userRepository;
 
 
+    public UserInfo readByContact(Contact contact, AccessStatus accessStatus) {
+        UserInfo userInfo = userRepository.readByContact(contact, accessStatus);
+        if (userInfo == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+        return userInfo;
+    }
+
     public UserInfo readByEmail(String email, AccessStatus accessStatus) {
         UserInfo userInfo = userRepository.readByEmail(email, accessStatus);
         if (userInfo == null) {
