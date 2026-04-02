@@ -9,4 +9,5 @@ public interface TodayMissionRepository {
     long countTodayMissions(UserId userId);
     void save(UserId userId, String missionId, LocalDateTime targetDate);
     void updateStatus(String todayMissionId, MissionStatus status);
+    String findUserIdByMissionId(String todayMissionId);
 }

@@ -76,7 +76,8 @@ public enum ErrorCode {
     AI_S3_UPLOAD_FAILED("AI_3", "AI 처리 결과 S3 업로드에 실패하였습니다."),
     AI_IMAGE_READ_FAILED("AI_4", "이미지를 읽을 수 없습니다."),
     AI_DETECTION_EMPTY("AI_5", "이미지에서 정리 대상 영역을 감지하지 못했습니다."),
-    AI_IMAGE_LAMA_FAILED("AI_6", "이미지 정리 처리(LAMA)에 실패하였습니다.");
+    AI_IMAGE_LAMA_FAILED("AI_6", "이미지 정리 처리(LAMA)에 실패하였습니다."),
+    AI_DETECTION_FAILED("AI_7", "어질러진 영역 감지(YOLO)에 실패하였습니다.");
 
     private final String code;
     private final String message;

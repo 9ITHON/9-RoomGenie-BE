@@ -1,6 +1,5 @@
 package team9.demo.implementation.auth;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,11 @@ import java.util.Random;
 public class AuthGenerator {
 
     private final Random random = new Random();
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public AuthGenerator(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * 인증번호 6자리 생성 (현재는 디버깅용으로 "000000" 반환)

@@ -15,9 +15,13 @@ public class ChatResponse {
     private List<Choice> choices;
 
     public String getResultMessage() {
-        if (choices != null && !choices.isEmpty()) {
-            return choices.get(0).getMessage().getContent();
+        if (choices == null || choices.isEmpty()) {
+            return "";
         }
-        return null;
+        TextMessage message = choices.get(0).getMessage();
+        if (message == null) {
+            return "";
+        }
+        return message.getContent();
     }
 }

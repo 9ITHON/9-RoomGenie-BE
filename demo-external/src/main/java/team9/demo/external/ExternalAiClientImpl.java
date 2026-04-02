@@ -62,6 +62,12 @@ public class ExternalAiClientImpl implements ExternalAiClient {
     private final RestTemplate restTemplate;
     private final AmazonS3 amazonS3;
 
+    private final RestTemplate lamaClient = new RestTemplate(List.of(
+            new FormHttpMessageConverter(),
+            new ByteArrayHttpMessageConverter(),
+            new MappingJackson2HttpMessageConverter()
+    ));
+
     // [1] GPT Vision 단일 이미지 분석
     @Override
     public ChatResponse requestImageAnalysis(String imageUrl, String requestText) {
@@ -118,52 +124,63 @@ public class ExternalAiClientImpl implements ExternalAiClient {
     // [3] YOLO - 어질러진 영역 감지
     @Override
     public List<Box> detectClutterBoxes(byte[] imageBytes) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-        ResponseEntity<List> response = restTemplate.exchange(
-                yoloServerUrl + "/yolo",
-                HttpMethod.POST,
-                new HttpEntity<>(imageBytes, headers),
-                List.class
-        );
+            ResponseEntity<List> response = restTemplate.exchange(
+                    yoloServerUrl + "/yolo",
+                    HttpMethod.POST,
+                    new HttpEntity<>(imageBytes, headers),
+                    List.class
+            );
 
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> rawBoxes = (List<Map<String, Object>>) response.getBody();
-        if (rawBoxes == null) return Collections.emptyList();
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> rawBoxes = (List<Map<String, Object>>) response.getBody();
+            if (rawBoxes == null) return Collections.emptyList();
 
-        return rawBoxes.stream()
-                .map(map -> new Box(
-                        ((Number) map.get("x")).intValue(),
-                        ((Number) map.get("y")).intValue(),
-                        ((Number) map.get("width")).intValue(),
-                        ((Number) map.get("height")).intValue()
-                ))
-                .toList();
+            return rawBoxes.stream()
+                    .map(map -> new Box(
+                            ((Number) map.get("x")).intValue(),
+                            ((Number) map.get("y")).intValue(),
+                            ((Number) map.get("width")).intValue(),
+                            ((Number) map.get("height")).intValue()
+                    ))
+                    .toList();
+        } catch (Exception e) {
+            log.error("YOLO 감지 실패: {}", e.getMessage(), e);
+            throw new AiException(ErrorCode.AI_DETECTION_FAILED);
+        }
     }
 
     // [4] LAMA Inpainting - 이미지 정리
     @Override
     public String editImageWithLama(byte[] imageBytes, byte[] maskBytes, String prompt, UserId userId) {
-        MultiValueMap<String, Object> body = buildLamaRequestBody(imageBytes, maskBytes, prompt);
+        try {
+            MultiValueMap<String, Object> body = buildLamaRequestBody(imageBytes, maskBytes, prompt);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        RestTemplate lamaClient = new RestTemplate(List.of(
-                new FormHttpMessageConverter(),
-                new ByteArrayHttpMessageConverter(),
-                new MappingJackson2HttpMessageConverter()
-        ));
+            ResponseEntity<byte[]> response = lamaClient.exchange(
+                    lamaServerUrl + "/inpaint",
+                    HttpMethod.POST,
+                    new HttpEntity<>(body, headers),
+                    byte[].class
+            );
 
-        ResponseEntity<byte[]> response = lamaClient.exchange(
-                lamaServerUrl + "/inpaint",
-                HttpMethod.POST,
-                new HttpEntity<>(body, headers),
-                byte[].class
-        );
+            byte[] responseBody = response.getBody();
+            if (responseBody == null || responseBody.length == 0) {
+                throw new AiException(ErrorCode.AI_IMAGE_LAMA_FAILED);
+            }
 
-        return uploadToS3(response.getBody(), userId);
+            return uploadToS3(responseBody, userId);
+        } catch (AiException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("LAMA inpainting 실패: {}", e.getMessage(), e);
+            throw new AiException(ErrorCode.AI_IMAGE_LAMA_FAILED);
+        }
     }
 
     // S3 업로드
@@ -223,6 +240,9 @@ public class ExternalAiClientImpl implements ExternalAiClient {
         }
 
         Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+        if (message == null) {
+            throw new AiException(ErrorCode.AI_PROMPT_FAILED);
+        }
         String content = (String) message.get("content");
 
         return new ChatResponse(List.of(new Choice(0, new TextMessage("assistant", content))));

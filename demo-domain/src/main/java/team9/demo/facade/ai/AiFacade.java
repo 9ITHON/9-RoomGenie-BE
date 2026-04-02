@@ -21,11 +21,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AiFacade {
+
+    private static final Pattern SUCCESS_PATTERN = Pattern.compile("\\[RESULT:SUCCESS]");
 
     private final UserService userService;
     private final AiProcessor aiProcessor;
@@ -68,7 +71,7 @@ public class AiFacade {
         ChatResponse response = aiProcessor.requestComparisonAnalysis(beforeMedia.getUrl(), afterMedia.getUrl(), prompt);
         String message = response.getResultMessage();
 
-        boolean isComplete = message.contains("[RESULT:SUCCESS]");
+        boolean isComplete = SUCCESS_PATTERN.matcher(message).find();
         log.info("미션 완료 여부: {}, todayMissionId: {}", isComplete, todayMissionId);
 
         MissionStatus resultStatus = isComplete ? MissionStatus.COMPLETED : MissionStatus.ONGOING;

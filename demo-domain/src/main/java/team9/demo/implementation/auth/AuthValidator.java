@@ -1,14 +1,16 @@
 package team9.demo.implementation.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import team9.demo.error.AuthorizationException;
 import team9.demo.error.ErrorCode;
 
 @Component
+@RequiredArgsConstructor
 public class AuthValidator {
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public void validateVerifyCode(String existsVerificationCode, String verificationCode) {
         if (!existsVerificationCode.equals(verificationCode)) {

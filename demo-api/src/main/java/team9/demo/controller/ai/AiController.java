@@ -12,6 +12,9 @@ import team9.demo.model.user.UserId;
 import team9.demo.util.helper.FileHelper;
 import team9.demo.util.security.CurrentUser;
 
+import team9.demo.error.AiException;
+import team9.demo.error.ErrorCode;
+
 import java.io.IOException;
 
 @RestController
@@ -22,8 +25,8 @@ public class AiController {
     private final AiFacade aiFacade;
 
     @PostMapping("/image/analysis")
-    public ChatGPTResponse imageAnalysis(@RequestParam MultipartFile image, @RequestParam String requestText, @CurrentUser UserId userId) throws IOException {
-        FileData converted = FileHelper.convertMultipartFileToFileData(image);
+    public ChatGPTResponse imageAnalysis(@RequestParam MultipartFile image, @RequestParam String requestText, @CurrentUser UserId userId) {
+        FileData converted = convertFile(image);
         ChatResponse result = aiFacade.requestImageAnalysis(converted, requestText, userId);
         return ChatGPTResponse.of(result.getResultMessage());
     }
@@ -34,11 +37,11 @@ public class AiController {
             @RequestParam MultipartFile beforeImage,
             @RequestParam MultipartFile afterImage,
             @CurrentUser UserId userId
-    ) throws IOException {
+    ) {
         String result = aiFacade.verifyTodayMissionByImage(
                 todayMissionId,
-                FileHelper.convertMultipartFileToFileData(beforeImage),
-                FileHelper.convertMultipartFileToFileData(afterImage),
+                convertFile(beforeImage),
+                convertFile(afterImage),
                 userId
         );
         return ResponseEntity.ok(result);
@@ -48,10 +51,18 @@ public class AiController {
     public ChatGPTResponse generateCleanedRoomImage(
             @RequestParam MultipartFile image,
             @CurrentUser UserId userId
-    ) throws IOException {
-        FileData fileData = FileHelper.convertMultipartFileToFileData(image);
+    ) {
+        FileData fileData = convertFile(image);
         String cleanedImageUrl = aiFacade.generateCleanedRoomImageWithLama(fileData, userId);
         String gptAnalysis = aiFacade.requestImageAnalysisText(cleanedImageUrl, userId);
         return ChatGPTResponse.of(cleanedImageUrl, gptAnalysis);
+    }
+
+    private FileData convertFile(MultipartFile file) {
+        try {
+            return FileHelper.convertMultipartFileToFileData(file);
+        } catch (IOException e) {
+            throw new AiException(ErrorCode.AI_IMAGE_READ_FAILED);
+        }
     }
 }
