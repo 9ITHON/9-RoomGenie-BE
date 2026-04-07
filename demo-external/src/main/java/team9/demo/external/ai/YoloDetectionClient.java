@@ -2,7 +2,6 @@ package team9.demo.external.ai;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
+import team9.demo.external.config.properties.YoloProperties;
 import team9.demo.model.ai.mask.Box;
 
 import java.util.Collections;
@@ -28,10 +28,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class YoloDetectionClient {
 
-    @Value("${ai.yolo.url:http://localhost:5000}")
-    private String yoloServerUrl;
-
     private final RestTemplate restTemplate;
+    private final YoloProperties yoloProperties;
 
     public List<Box> detectClutterBoxes(byte[] imageBytes) {
         try {
@@ -39,7 +37,7 @@ public class YoloDetectionClient {
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
             ResponseEntity<List> response = restTemplate.exchange(
-                    yoloServerUrl + "/yolo",
+                    yoloProperties.url() + "/yolo",
                     HttpMethod.POST,
                     new HttpEntity<>(imageBytes, headers),
                     List.class

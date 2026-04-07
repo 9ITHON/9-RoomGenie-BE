@@ -2,7 +2,6 @@ package team9.demo.external.ai;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
+import team9.demo.external.config.properties.LamaProperties;
 import team9.demo.model.user.UserId;
 
 import java.util.List;
@@ -34,10 +34,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LamaInpaintClient {
 
-    @Value("${ai.lama.url:http://localhost:7870}")
-    private String lamaServerUrl;
-
     private final S3ImageStore s3ImageStore;
+    private final LamaProperties lamaProperties;
 
     private final RestTemplate lamaClient = new RestTemplate(List.of(
             new FormHttpMessageConverter(),
@@ -57,7 +55,7 @@ public class LamaInpaintClient {
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             ResponseEntity<byte[]> response = lamaClient.exchange(
-                    lamaServerUrl + "/inpaint",
+                    lamaProperties.url() + "/inpaint",
                     HttpMethod.POST,
                     new HttpEntity<>(body, headers),
                     byte[].class

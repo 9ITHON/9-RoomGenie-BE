@@ -5,10 +5,10 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import team9.demo.error.AiException;
 import team9.demo.error.ErrorCode;
+import team9.demo.external.config.properties.AwsS3Properties;
 import team9.demo.model.user.UserId;
 
 import java.io.ByteArrayInputStream;
@@ -32,14 +32,12 @@ import java.util.UUID;
 public class S3ImageStore {
 
     private final AmazonS3 amazonS3;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private final AwsS3Properties s3Properties;
 
     /** S3 오브젝트를 다운로드해 byte 배열로 반환한다. */
     public byte[] download(String imageUrl) throws IOException {
         String key = extractKey(imageUrl);
-        S3Object object = amazonS3.getObject(bucket, key);
+        S3Object object = amazonS3.getObject(s3Properties.bucket(), key);
         try (InputStream inputStream = object.getObjectContent()) {
             return inputStream.readAllBytes();
         }
@@ -59,13 +57,13 @@ public class S3ImageStore {
         metadata.setContentType("image/png");
 
         try (InputStream inputStream = new ByteArrayInputStream(image)) {
-            amazonS3.putObject(bucket, key, inputStream, metadata);
+            amazonS3.putObject(s3Properties.bucket(), key, inputStream, metadata);
         } catch (IOException e) {
             log.error("S3 업로드 실패: {}", e.getMessage(), e);
             throw new AiException(ErrorCode.AI_S3_UPLOAD_FAILED);
         }
 
-        return amazonS3.getUrl(bucket, key).toString();
+        return amazonS3.getUrl(s3Properties.bucket(), key).toString();
     }
 
     /** S3 URL(path-style / virtual-hosted style)에서 object key를 추출한다. */
@@ -73,6 +71,7 @@ public class S3ImageStore {
         URL url = new URL(imageUrl);
         String host = url.getHost();
         String path = url.getPath();
+        String bucket = s3Properties.bucket();
 
         if (path.startsWith("/" + bucket + "/")) {
             return path.substring(("/" + bucket + "/").length());
